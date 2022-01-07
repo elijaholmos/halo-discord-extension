@@ -128,3 +128,6 @@ dist_packed
 
 # credentials
 credentials*
+
+# temp files on local machine
+src/static/tmp
