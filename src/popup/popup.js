@@ -1,5 +1,6 @@
 import { ref, update } from 'firebase/database';
 import util from '../util/util.js';
+import { triggerDiscordAuthFlow } from '../util/auth.js';
 
 (async function popup() {
     if(document.readyState !== 'complete')
@@ -64,6 +65,8 @@ import util from '../util/util.js';
         }
     };
 
+
+    document.querySelector('#login-button').addEventListener('click', () => triggerDiscordAuthFlow({credentials, auth, db}));
 
     // -------- Main logic --------
     const { id, username, discriminator, avatar } = await fetchDiscordUser(discord);
