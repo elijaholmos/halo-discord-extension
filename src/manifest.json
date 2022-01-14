@@ -1,7 +1,6 @@
 {
 	"name": "Halo Notification Service",
 	"description": "Receive notifications for new Halo actions",
-	"version": "1.0",
 	"manifest_version": 3,
 	"host_permissions": ["*://halo.gcu.edu/"],
 	"permissions": ["cookies", "identity", "storage"],
