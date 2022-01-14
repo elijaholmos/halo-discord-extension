@@ -68,15 +68,22 @@ import { triggerDiscordAuthFlow } from '../util/auth.js';
 
     document.querySelector('#login-button').addEventListener('click', () => triggerDiscordAuthFlow({credentials, auth, db}));
 
-    // -------- Main logic --------
-    const { id, username, discriminator, avatar } = await fetchDiscordUser(discord);
+    document.querySelector('#login-button').classList.remove('hidden');
+    document.querySelector('#discord-username').textContent = 'Unconnected';
 
-    if(!!id) {
-        document.querySelector('#discord-profile').setAttribute('src', !!avatar
-            ? `https://cdn.discordapp.com/avatars/${discord_uid || id}/${avatar}.png`
-            : `https://cdn.discordapp.com/embed/avatars/${discriminator % 5}.png`);
-        document.querySelector('#discord-username').textContent = `${username}#${discriminator}`;
-    } else {
-        document.querySelector('#discord-username').textContent = 'Unconnected';
-    }
+    // -------- Main logic --------
+    (async function main() {
+        if(!!discord?.access_token) {
+            const { id, username, discriminator, avatar } = await fetchDiscordUser(discord);
+
+            if(!!id) {
+                document.querySelector('#login-button').classList.add('hidden');
+                document.querySelector('#discord-profile').setAttribute('src', !!avatar
+                    ? `https://cdn.discordapp.com/avatars/${discord_uid || id}/${avatar}.png`
+                    : `https://cdn.discordapp.com/embed/avatars/${discriminator % 5}.png`);
+                document.querySelector('#discord-username').textContent = `${username}#${discriminator}`;
+            }
+        } else setInterval(main, 1000);
+    })();
+    
 })();
