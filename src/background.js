@@ -19,7 +19,7 @@ import util from './util/util.js';
             });
             for(const cookie of cookies) {
                 await chrome.storage.sync.set({[cookie.name]: cookie.value});
-                auth.currentUser ?? await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value);
+                auth.currentUser && await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value);
             }
         } catch(e) {
             console.log(e);
@@ -28,10 +28,13 @@ import util from './util/util.js';
     };
 
     (async function main() {
+        console.log('in beginning of main')
         const { discord_uid, discord_access } = await chrome.storage.sync.get(['discord_uid', 'discord_access']);
         if(!discord_uid || !discord_access) return setTimeout(main, 1000);
         try {
+            console.log('attempting to login');
             await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, discord_access);
+            console.log(auth.currentUser);
         } catch (e) {
             console.error(e);
             return setTimeout(main, 1000);
