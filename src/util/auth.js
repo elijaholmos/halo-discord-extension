@@ -41,14 +41,15 @@ export const triggerDiscordAuthFlow = function ({credentials, auth, db}) {
         chrome.storage.sync.set({discord_access: discord_tokens.access_token});
         chrome.storage.sync.set({discord: discord_tokens});
 
-        //fetch user info
+        //fetch Discord user info
         const discord_user = await fetchDiscordUser(discord_tokens.access_token);
-        //store discord id locally
-        chrome.storage.sync.set({discord_uid: discord_user.id});
 
-        //create Firebase user
+        //create Firebase user (BEFORE storing local discord info)
         const { user } = await createUserWithEmailAndPassword(auth, `${discord_user.id}@halodiscord.app`, discord_tokens.access_token);
         //console.log(user);
+
+        //store discord id locally (triggers background.js which requires user to be created in DB)
+        chrome.storage.sync.set({discord_uid: discord_user.id});
 
         //collect halo cookies and store in db BEFORE setting user info in firebase but AFTER authenticating user
         //this is due to the watcher in place by the bot

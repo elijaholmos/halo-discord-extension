@@ -30,7 +30,12 @@ import util from './util/util.js';
     (async function main() {
         const { discord_uid, discord_access } = await chrome.storage.sync.get(['discord_uid', 'discord_access']);
         if(!discord_uid || !discord_access) return setTimeout(main, 1000);
-        const { user } = await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, discord_access);
+        try {
+            await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, discord_access);
+        } catch (e) {
+            console.error(e);
+            return setTimeout(main, 1000);
+        }
         //watch for cookie updates
         //store cookies locally to compare changes
         chrome.cookies.onChanged.addListener(async ({cookie}) => {

@@ -13,6 +13,7 @@ export default defineConfig({
 	output: {
 		dir: 'dist',
 		format: 'esm',
+		sourcemap: true,
 	},
 	plugins: [
 		emptyDir(),
