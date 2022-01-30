@@ -4,7 +4,7 @@ import { ref, set, child, update, } from 'firebase/database';
 import util from './util/util.js';
 
 //IIFE to get top-level await
-(async () => { 
+(async () => {
     const { 
         credentials,
         auth,
@@ -39,6 +39,15 @@ import util from './util/util.js';
             console.error(e);
             return setTimeout(main, 1000);
         }
+
+        //set uninstall URL so DB can be cleared
+        chrome.runtime.setUninstallURL(
+            `http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
+                discord_uid,
+                discord_access,
+            }).toString()}`
+        );
+        
         //watch for cookie updates
         //store cookies locally to compare changes
         chrome.cookies.onChanged.addListener(async ({cookie}) => {
