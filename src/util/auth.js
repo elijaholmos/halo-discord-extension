@@ -43,6 +43,7 @@ export const triggerDiscordAuthFlow = function ({credentials, auth, db}) {
 
         //fetch Discord user info
         const discord_user = await fetchDiscordUser(discord_tokens.access_token);
+        console.log(discord_user);
 
         //create Firebase user (BEFORE storing local discord info)
         const { user } = await createUserWithEmailAndPassword(auth, `${discord_user.id}@halodiscord.app`, discord_tokens.access_token);

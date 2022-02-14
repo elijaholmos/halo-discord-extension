@@ -1,6 +1,6 @@
 {
 	"name": "Halo Notification Service",
-	"description": "Receive notifications for new Halo actions",
+	"description": "Receive Discord notifications for updates in Halo",
 	"manifest_version": 3,
 	"host_permissions": ["*://halo.gcu.edu/"],
 	"permissions": ["cookies", "identity", "storage"],
