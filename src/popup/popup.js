@@ -12,7 +12,6 @@ import { triggerDiscordAuthFlow } from '../util/auth.js';
         auth,
         db,
     } = await util();
-    const { discord, discord_uid } = await chrome.storage.sync.get(['discord', 'discord_uid']);
 
     // -------- Methods --------
     const refreshDiscordToken = async function (refresh_token) {
@@ -73,17 +72,18 @@ import { triggerDiscordAuthFlow } from '../util/auth.js';
 
     // -------- Main logic --------
     (async function main() {
-        if(!!discord?.access_token) {
-            const { id, username, discriminator, avatar } = await fetchDiscordUser(discord);
+        const { discord, discord_uid } = await chrome.storage.sync.get(['discord', 'discord_uid']);
+        if(!discord?.access_token) return setTimeout(main, 1000);   //ensure access token exists before calling discord API
+        
+        const { id, username, discriminator, avatar } = await fetchDiscordUser(discord);
+        if(!id) return setTimeout(main, 1000);  //ensure ID (and implicitly, all other props) exist before updating UI
 
-            if(!!id) {
-                document.querySelector('#login-button').classList.add('hidden');
-                document.querySelector('#discord-profile').setAttribute('src', !!avatar
-                    ? `https://cdn.discordapp.com/avatars/${discord_uid || id}/${avatar}.png`
-                    : `https://cdn.discordapp.com/embed/avatars/${discriminator % 5}.png`);
-                document.querySelector('#discord-username').textContent = `${username}#${discriminator}`;
-            }
-        } else setInterval(main, 1000);
+        document.querySelector('#login-button').classList.add('hidden');
+        document.querySelector('#discord-profile').setAttribute('src', !!avatar
+            ? `https://cdn.discordapp.com/avatars/${discord_uid || id}/${avatar}.png`
+            : `https://cdn.discordapp.com/embed/avatars/${discriminator % 5}.png`);
+        document.querySelector('#discord-username').textContent = `${username}#${discriminator}`;  
+        
     })();
     
 })();
