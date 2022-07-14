@@ -2,6 +2,8 @@
 	"name": "halo-discord-extension",
 	"version": "1.0.5",
 	"description": "",
+	"author": "Elijah Olmos",
+	"license": "AGPL-3.0-only",
 	"type": "module",
 	"scripts": {
 		"test": "rollup -c -w",
