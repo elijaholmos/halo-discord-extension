@@ -1,18 +1,13 @@
 {
-	"name": "Halo Notification Service",
-	"description": "Receive Discord notifications for updates in Halo",
 	"manifest_version": 3,
+	"name": "Halo Notification Service",
 	"host_permissions": ["*://halo.gcu.edu/"],
 	"permissions": ["cookies", "identity", "storage"],
 	"action": {
 		"default_icon": {
 			"48": "static/icon.png"
 		},
-		"default_popup": "popup/popup.html"
-	},
-	"background": {
-		"service_worker": "background.js",
-		"type": "module"
+		"default_popup": "popup/index.html"
 	},
 	"icons": {
 		"16": "static/icon.png",

@@ -130,4 +130,4 @@ dist_packed
 credentials*
 
 # temp files on local machine
-src/static/tmp
+tmp/

@@ -1,0 +1,17 @@
+<script>
+	import Login from './Login.svelte';
+	import Settings from './Settings.svelte';
+	import { discord_info } from '../stores';
+
+	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
+	$: ({ discord_uid } = $discord_info || {});
+	//confirmed 2022-08-06 that this dynamically updates
+</script>
+
+<div id="app-content">
+	{#if !discord_uid}
+		<Login />	
+	{:else}
+		<Settings />
+	{/if}	
+</div>
