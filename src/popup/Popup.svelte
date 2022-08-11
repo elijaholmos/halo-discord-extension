@@ -8,10 +8,10 @@
 	//confirmed 2022-08-06 that this dynamically updates
 </script>
 
-<div id="app-content">
+<main>
 	{#if !discord_uid}
-		<Login />	
+		<Login />
 	{:else}
 		<Settings />
-	{/if}	
-</div>
+	{/if}
+</main>
