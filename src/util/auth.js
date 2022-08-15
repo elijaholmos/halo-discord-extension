@@ -6,27 +6,36 @@ import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
 export const fetchDiscordUser = async function () {
-	const res = await fetch(`https://discord.com/api/users/@me`, {
-		headers: {
-			Authorization: `Bearer ${discord_tokens.get().access_token}`,
-		},
-	});
+	try {
+		const res = await fetch(`https://discord.com/api/users/@me`, {
+			headers: {
+				Authorization: `Bearer ${discord_tokens.get().access_token}`,
+			},
+		});
 
-	return await res.json();
+		if (res.status === 401 || res.status === 403) return await refreshDiscordToken().then(fetchDiscordUser);
+
+		return await res.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
 };
 
-export const refreshDiscordToken = async function (refresh_token) {
+export const refreshDiscordToken = async function ({ refresh_token } = discord_tokens.get()) {
 	try {
 		//get an access token using the refresh token
-		const tokens = await (
-			await fetch(`${url}/refresh`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-				body: new URLSearchParams({ refresh_token }).toString(),
-			})
-		).json();
+		const res = await fetch(`${url}/refresh`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: new URLSearchParams({ refresh_token }).toString(),
+		});
 
-		console.log(`Refreshed token response: ${tokens}`);
+		if (res.status !== 200) throw new Error(await res.text());
+
+		const tokens = await res.json();
+
+		console.log('Refreshed token response:', tokens);
 
 		const { access_token } = tokens;
 		//store token locally
@@ -61,9 +70,7 @@ export const triggerDiscordAuthFlow = function () {
 		{
 			url: `https://discord.com/api/oauth2/authorize?response_type=code&client_id=${
 				credentials.discord.client_id
-			}&redirect_uri=${encodeURIComponent(
-				chrome.identity.getRedirectURL()
-			)}&scope=identify`,
+			}&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=identify`,
 			interactive: true,
 		},
 		async (redirect_url) => {
@@ -111,11 +118,7 @@ export const triggerDiscordAuthFlow = function () {
 					await chrome.storage.sync.set({
 						[cookie.name]: cookie.value,
 					});
-					!!user &&
-						(await set(
-							child(ref(db, `cookies/${user.uid}`), cookie.name),
-							cookie.value
-						));
+					!!user && (await set(child(ref(db, `cookies/${user.uid}`), cookie.name), cookie.value));
 				}
 			} catch (e) {
 				console.log(e);
