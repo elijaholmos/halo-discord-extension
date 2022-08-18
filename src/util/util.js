@@ -1,11 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
 import credentials from './credentials';
 
 const app = initializeApp(credentials.firebase);
 const auth = getAuth(app);
-const db = getDatabase(app);
+const db = getFirestore(app);
 
 export {
     app,

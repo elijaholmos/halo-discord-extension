@@ -1,15 +1,15 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { ref, set, update, child } from 'firebase/database';
+import { doc, setDoc } from 'firebase/firestore';
 import { discord_info, discord_tokens } from '../stores';
 import credentials from './credentials';
 import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
-export const fetchDiscordUser = async function () {
+export const fetchDiscordUser = async function ({ access_token, token_type } = discord_tokens.get()) {
 	try {
 		const res = await fetch(`https://discord.com/api/users/@me`, {
 			headers: {
-				Authorization: `Bearer ${discord_tokens.get().access_token}`,
+				Authorization: `${token_type || 'Bearer'} ${access_token}`,
 			},
 		});
 
@@ -41,7 +41,7 @@ export const refreshDiscordToken = async function ({ refresh_token } = discord_t
 		//store token locally
 		discord_tokens.set(tokens);
 		//store tokens in DB
-		update(ref(db, `discord_tokens/${auth.currentUser.uid}`), tokens);
+		setDoc(doc(db, `discord_tokens/${auth.currentUser.uid}`), tokens, { merge: true });
 
 		//lastly, return the access token
 		return access_token;
@@ -87,50 +87,60 @@ export const triggerDiscordAuthFlow = function () {
 			discord_tokens.set(tokens);
 
 			//fetch Discord user info
-			const discord_user = await fetchDiscordUser(access_token);
-			console.log(discord_user);
+			const { id: discord_uid } = await fetchDiscordUser(tokens);
+			console.log(`discord_uid: ${discord_uid}`);
 
-			//temp for testing
-			discord_info.update({ discord_uid: discord_user.id });
+			//set uninstall URL for internal purposes
+			chrome.runtime.setUninstallURL(
+				`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
+					discord_uid,
+					access_token,
+				}).toString()}`
+			);
 
 			//create Firebase user (BEFORE storing local discord info)
 			//this also signs in the user
-			const { user } = await createUserWithEmailAndPassword(
-				auth,
-				`${discord_user.id}@halodiscord.app`,
-				access_token
-			);
+			const { user } = await createUserWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, access_token);
 			//console.log(user);
 
 			//store discord id locally (triggers background.js which requires user to be created in DB)
 			//await chrome.storage.sync.set({ discord_uid: discord_user.id });
-			discord_info.update({ discord_uid: discord_user.id });
+			discord_info.update({ discord_uid });
 
 			//collect halo cookies and store in db BEFORE setting user info in firebase but AFTER authenticating user
 			//this is due to the watcher in place by the bot
 			//await sweepHaloCookies();
 			try {
-				console.log('sweeping cookies');
-				const cookies = await chrome.cookies.getAll({
-					url: 'https://halo.gcu.edu',
-				});
+				console.log('sweeping cookies - initial');
+				const cookies = await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' });
 				for (const cookie of cookies) {
 					await chrome.storage.sync.set({
 						[cookie.name]: cookie.value,
 					});
-					!!user && (await set(child(ref(db, `cookies/${user.uid}`), cookie.name), cookie.value));
+					!!user &&
+						(await setDoc(
+							doc(db, `cookies/${user.uid}`),
+							{
+								[cookie.name]: cookie.value,
+							},
+							{ merge: true }
+						));
 				}
 			} catch (e) {
 				console.log(e);
 			}
 
 			//set user info in Firebase
-			await set(ref(db, `users/${user.uid}`), {
-				discord_uid: discord_user.id,
-				created_on: Date.now(),
-			});
+			await setDoc(
+				doc(db, `users/${user.uid}`),
+				{
+					discord_uid,
+					created_on: Date.now(),
+				},
+				{ merge: true }
+			);
 			//store discord tokens in DB
-			await update(ref(db, `discord_tokens/${user.uid}`), tokens);
+			await setDoc(doc(db, `discord_tokens/${user.uid}`), tokens, { merge: true });
 		}
 	);
 };
