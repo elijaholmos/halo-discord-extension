@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script src="popup.js" type="module"></script>
+	<style>
+		body {
+			width: 180px;
+		}
+
+		.hidden {
+			display: none !important;
+		}
+
+		#discord-profile {
+			border-radius: 9999px;
+			display: inline-block;
+			width: 45px;
+			height: 45px;
+		}
+
+		#discord-username {
+			display: inline-block;
+			padding: 10px;
+			position: relative;
+			bottom: 15px;
+			/* left: 50px; */
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.dsl-discord-btn {
+			background: #7289DA;
+			border: none;
+			padding: 8px 14px 8px 10px;
+			margin: 10px 0 20px;
+			display: inline-block;
+			font-size: 14px;
+			text-transform: none;
+			text-decoration: none;
+			transition: background 0.3s ease;
+			white-space: normal;
+		}
+
+		.dsl-discord-btn {
+			background-image: initial;
+			background-color: #7289DA;
+			border-color: initial;
+			color: rgb(242, 240, 237);
+			text-decoration-color: initial;
+		}
+
+		.dsl-discord-btn-icon {
+			background-image: url("https://dcoding.site/wp-content/plugins/discord-social-login/assets/images/discord_icon.svg");
+			background-repeat: no-repeat;
+			background-size: 100%;
+			display: inline-block;
+			height: 20px;
+			width: 20px;
+			vertical-align: middle;
+			margin: -1px 10px 0 0;
+		}
+
+		.dsl-discord-btn:hover {
+			background-image: initial;
+			background-color: rgb(27, 30, 31);
+			background: #2C2F33;
+		}
+	</style>
+</head>
+
+<body>
+	<a id="login-button" class="dsl-discord-btn style-1" rel="nofollow" title="Login with Discord">
+		<span class="dsl-discord-btn-icon"></span>
+		<span class="dsl-discord-btn-text">Login with Discord</span>
+	</a>
+	<img id="discord-profile">
+	<p id="discord-username"></p>
+</body>
+
+</html>
