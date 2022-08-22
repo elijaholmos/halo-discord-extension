@@ -9,6 +9,10 @@
 		},
 		"default_popup": "popup/index.html"
 	},
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
 	"icons": {
 		"16": "static/icon.png",
 		"32": "static/icon.png",
