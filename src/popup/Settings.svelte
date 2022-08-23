@@ -1,6 +1,7 @@
 <script>
 	import { test, test2 } from '../stores';
 	import { fetchDiscordUser } from '../util/auth';
+	import { getCookie, getUserId, getUserOverview } from '../util/halo';
 	import LazyLoader from './LazyLoader.svelte';
 	import Navbar from './Navbar.svelte';
 	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
@@ -24,20 +25,36 @@
 
 	// ----- state -----
 	let user;
+	let classes = [];
 
 	const lazyLoad = async function () {
 		user = await fetchDiscordUser();
 		console.log(user);
+		const cookie = await getCookie();
+		const uid = await getUserId({ cookie });
+		const class_res = await getUserOverview({ uid, cookie });
+		console.log(class_res);
+		for (const { classCode } of class_res.classes.courseClasses) classes.push(classCode);
 	};
 </script>
 
 <LazyLoader {lazyLoad}>
 	<Navbar {user} />
 
+	<div class="text-center">
+		<h1 class="text-lg">Active Classes</h1>
+		{#if classes.length === 0}
+			<div class="badge badge-error badge-md">No active classes</div>
+		{/if}
+		{#each classes as code}
+			<div class="badge badge-primary badge-md">{code}</div>
+		{/each}
+	</div>
+
 	<div class="form-control">
 		{#each settings as { name, enabled }}
 			<label class="label cursor-pointer">
-				<span class="label-text">{name}</span>
+				<span class="text-base">{name}</span>
 				<input type="checkbox" class="toggle toggle-primary" bind:checked={enabled} />
 			</label>
 		{/each}

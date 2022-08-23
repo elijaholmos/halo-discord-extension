@@ -1,4 +1,25 @@
+const withOpacityValue = function (variable) {
+	return ({ opacityValue }) => {
+		if (opacityValue === undefined) {
+			return `hsl(var(${variable}))`;
+		}
+		return `hsl(var(${variable}) / ${opacityValue})`;
+	};
+};
+
+const noop = function (variable) {
+	return () => `hsl(var(${variable}))`;
+};
+
 module.exports = {
+	theme: {
+		extend: {
+			colors: {
+				discord: withOpacityValue('--discord'),
+				'discord-hover': noop('--discord-hover'),
+			},
+		},
+	},
 	daisyui: {
 		themes: [
 			{
@@ -13,6 +34,8 @@ module.exports = {
 					success: '#4ade80',
 					warning: '#f59e0b',
 					error: '#ef4444',
+					'--discord': '234 86% 65%',
+					'--discord-hover': '235, 66%, 70%',
 				},
 			},
 		],

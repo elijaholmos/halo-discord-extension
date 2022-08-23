@@ -9,7 +9,6 @@
 	<a
 		id="login-button"
 		class="dsl-discord-btn"
-		rel="nofollow"
 		title="Login with Discord"
 		on:click={triggerDiscordAuthFlow}
 	>
