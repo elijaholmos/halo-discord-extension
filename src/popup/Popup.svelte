@@ -1,5 +1,5 @@
 <script>
-	import { discord_info } from '../stores';
+	import { discord_info, halo_cookies } from '../stores';
 	import Login from './Login.svelte';
 	import Settings from './Settings.svelte';
 
@@ -9,7 +9,13 @@
 </script>
 
 <main>
-	{#if !discord_uid}
+	{#each Object.entries($halo_cookies) as o}
+		{o[0]} = {o[1]}
+	{/each}
+	{#if true}
+		<br />
+		<p>{Object.keys($halo_cookies).length}</p>
+	{:else if !discord_uid}
 		<Login />
 	{:else}
 		<Settings />

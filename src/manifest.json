@@ -3,6 +3,7 @@
 	"name": "Halo Notification Service",
 	"host_permissions": ["*://halo.gcu.edu/"],
 	"permissions": ["cookies", "identity", "storage"],
+	"minimum_chrome_version": "92",
 	"action": {
 		"default_icon": {
 			"48": "static/icon.png"

@@ -43,11 +43,10 @@
 
 	<div class="text-center">
 		<h1 class="text-lg">Active Classes</h1>
-		{#if classes.length === 0}
-			<div class="badge badge-error badge-md">No active classes</div>
-		{/if}
 		{#each classes as code}
 			<div class="badge badge-primary badge-md">{code}</div>
+		{:else}
+			<div class="badge badge-error badge-md">No active classes</div>
 		{/each}
 	</div>
 
