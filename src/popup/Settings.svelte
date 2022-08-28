@@ -1,41 +1,38 @@
 <script>
-	import {stores} from '../stores';
-	import { fetchDiscordUser } from '../util/auth';
+	import { stores } from '../stores';
+	import { fetchDiscordUser, getDefaultSettings, getUserSettings, updateUserSettings } from '../util/auth';
 	import { getCookie, getUserId, getUserOverview } from '../util/halo';
 	import LazyLoader from './LazyLoader.svelte';
 	import Navbar from './Navbar.svelte';
-	const { test, test2 } = stores//.getMany(['test', 'test2']);
+	const { test, test2, halo_cookies } = stores;
 	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
 	$: ({ a } = $test);
 	//console.log($test, $test2);
 
-	const settings = [
-		{
-			name: 'Announcement Notifications',
-			enabled: true,
-		},
-		{
-			name: 'Grade Notifications',
-			enabled: true,
-		},
-		{
-			name: 'Message Notifications',
-			enabled: true,
-		},
-	];
-
 	// ----- state -----
 	let user;
 	let classes = [];
+	let default_settings;
+	let user_settings;
 
 	const lazyLoad = async function () {
 		user = await fetchDiscordUser();
 		console.log(user);
-		const cookie = await getCookie();
+		//const cookie = await getCookie();
+		const cookie = halo_cookies.get();
 		const uid = await getUserId({ cookie });
 		const class_res = await getUserOverview({ uid, cookie });
 		console.log(class_res);
 		for (const { classCode } of class_res.classes.courseClasses) classes.push(classCode);
+
+		// settings
+		default_settings = await getDefaultSettings();
+		//apply default settings to user_settings
+		user_settings = Object.values(default_settings).reduce(
+			(acc, { id, value }) => (!!acc.hasOwnProperty(id) ? acc : { ...acc, [id]: value }),
+			await getUserSettings()
+		);
+		console.log(default_settings, user_settings);
 	};
 </script>
 
@@ -52,16 +49,17 @@
 	</div>
 
 	<div class="form-control">
-		{#each settings as { name, enabled }}
+		{#each default_settings as { id, name }}
 			<label class="label cursor-pointer">
 				<span class="text-base">{name}</span>
-				<input type="checkbox" class="toggle toggle-primary" bind:checked={enabled} />
+				<input type="checkbox" class="toggle toggle-primary" bind:checked={user_settings[id]} />
 			</label>
 		{/each}
-
-		{#each settings as { name, enabled }}
-			<p>{name} is {enabled ? 'enabled' : 'disabled'}</p>
-		{/each}
+		
+		<button class="btn btn-primary btn-sm" on:click={() => updateUserSettings(user_settings)}>Save</button>
+		
+		<!-- {JSON.stringify($halo_cookies)} -->
+		{JSON.stringify(user_settings)}
 		{a}
 		{$test2}
 		<button
@@ -70,8 +68,7 @@
 				test.update({ ree: 'ree', a: Date.now() });
 				test2.set(-Date.now());
 			}}
-		>
-			{JSON.stringify(user)}
+			>Click
 		</button>
 	</div>
 </LazyLoader>

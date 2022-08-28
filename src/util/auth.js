@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { child, ref, set, update } from 'firebase/database';
-import {stores} from '../stores';
+import { child, get, ref, set, update } from 'firebase/database';
+import { stores } from '../stores';
 import credentials from './credentials';
 import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
@@ -49,6 +49,37 @@ export const refreshDiscordToken = async function ({ refresh_token } = stores.di
 		console.error(err);
 		throw err;
 	}
+};
+
+export const getDefaultSettings = async function () {
+	try {
+		console.log('getDefaultSettings');
+		const settings = await get(ref(db, 'default_settings'));
+		return settings.exists() ? settings.val() : {};
+	} catch (e) {
+		console.error('getUserSettings error', e);
+		return {};
+	}
+};
+
+export const getUserSettings = async function () {
+	try {
+		console.log('getUserSettings');
+		const { uid } = auth.currentUser || {};
+		if (!uid) throw new Error('Cannot retrieve user settings; user is not signed in');
+		const settings = await get(ref(db, `settings/${uid}`));
+		return settings.exists() ? settings.val() : {};
+	} catch (e) {
+		console.error('getUserSettings error', e);
+		return {};
+	}
+};
+
+export const updateUserSettings = async function (settings) {
+	console.log('updateUserSettings');
+	const { uid } = auth.currentUser || {};
+	if (!uid) throw new Error('Cannot update user settings; user is not signed in');
+	await set(ref(db, `settings/${uid}`), settings);
 };
 
 const convertDiscordAuthCodeToToken = async function ({ auth_code }) {
@@ -115,7 +146,7 @@ export const triggerDiscordAuthFlow = function () {
 				const cookies = await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' });
 				//could this be mapped into an object than set in a single write?
 				for (const cookie of cookies) {
-					await chrome.storage.sync.set({ [cookie.name]: cookie.value });
+					stores.halo_cookies.update({ [cookie.name]: cookie.value });
 					!!user && (await set(child(ref(db, `cookies/${user.uid}`), cookie.name), cookie.value));
 				}
 			} catch (e) {

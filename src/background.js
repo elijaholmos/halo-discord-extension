@@ -1,7 +1,7 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { child, ref, set } from 'firebase/database';
-import { init } from './stores';
+import { init, stores } from './stores';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
 import { getHaloUserInfo } from './util/halo';
 import { auth, db, getHaloCookies } from './util/util';
@@ -9,10 +9,9 @@ import { auth, db, getHaloCookies } from './util/util';
 
 const COOKIE_KEY = 'halo_cookies';
 const firebaseSignIn = async function () {
+	console.log('in firebaseSignIn');
 	try {
-		const {
-			discord_info: { discord_uid, access_token },
-		} = await chrome.storage.sync.get('discord_info');
+		const { discord_uid, access_token } = stores.discord_info.get();
 		if (!discord_uid) throw new Error('no discord_uid');
 		if (!access_token) throw new Error('no access_token');
 		await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, access_token);
@@ -25,17 +24,19 @@ const firebaseSignIn = async function () {
 	console.log(`${chrome.runtime.getManifest().name} v${chrome.runtime.getManifest().version}`);
 
 	console.log('initializing ApplicationStoreManager');
-	const cookie = await getHaloCookies();
-	const stores = await init([
+	const initial_cookies = await getHaloCookies();
+	await init([
 		chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
 		chromeStorageSyncStore({ key: 'test2' }),
 		chromeStorageSyncStore({ key: 'discord_tokens' }),
 		chromeStorageSyncStore({ key: 'discord_info' }),
-		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: cookie }),
-		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({cookie}) }),
+		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: initial_cookies }),
+		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
 	]);
 	console.log('ApplicationStoreManager initialized');
 	console.log(stores);
+
+	console.log(() => console.log(stores.test.get()));
 
 	if (!auth.currentUser) await firebaseSignIn();
 	console.log(auth?.currentUser?.uid);
@@ -48,6 +49,7 @@ const firebaseSignIn = async function () {
 		({ reason }) => reason === chrome.runtime.OnInstalledReason.INSTALL && chrome.action.openPopup()
 	);
 
+	//sweeps halo cookies, updates local stores & DB
 	const sweepHaloCookies = async function () {
 		try {
 			console.log('sweeping cookies');
@@ -73,9 +75,6 @@ const firebaseSignIn = async function () {
 		if (cookie.domain !== 'halo.gcu.edu') return;
 		const stored_cookie = (await chrome.storage.sync.get(COOKIE_KEY))[COOKIE_KEY];
 		if (stored_cookie[cookie.name] === cookie.value) return console.log(`found dup cookie: ${cookie.name}`);
-		// await sweepHaloCookies();
-		await chrome.storage.sync.set({
-			[COOKIE_KEY]: { ...stored_cookie, [cookie.name]: cookie.value },
-		});
+		stores.halo_cookies.update({ [cookie.name]: cookie.value });
 	});
 })();

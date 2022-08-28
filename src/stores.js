@@ -5,11 +5,12 @@ class ApplicationStoreManager {
 
 	constructor() {
 		//listen for store updates
-		chrome.runtime.onConnect.addListener((port) => {
-			console.log('new port', port);
-			if (port.name !== 'store_update') return;
-			port.onMessage.addListener(this.updateStore.bind(this));
-		});
+		//currently unneeded since chromeStorageSyncStore tracks localstorage changes
+		// chrome.runtime.onConnect.addListener((port) => {
+		// 	console.log('new port', port);
+		// 	if (port.name !== 'store_update') return;
+		// 	port.onMessage.addListener(this.updateStore.bind(this));
+		// });
 	}
 
 	async init(i_stores = []) {
