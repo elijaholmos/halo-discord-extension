@@ -1,6 +1,9 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { child, ref, set } from 'firebase/database';
+import { init } from './stores';
+import chromeStorageSyncStore from './util/chromeStorageSyncStore';
+import { getHaloUserInfo } from './util/halo';
 import { auth, db, getHaloCookies } from './util/util';
 // no stores - code is not shared between background and popup
 
@@ -20,6 +23,19 @@ const firebaseSignIn = async function () {
 
 (async function () {
 	console.log(`${chrome.runtime.getManifest().name} v${chrome.runtime.getManifest().version}`);
+
+	console.log('initializing ApplicationStoreManager');
+	const cookie = await getHaloCookies();
+	const stores = await init([
+		chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
+		chromeStorageSyncStore({ key: 'test2' }),
+		chromeStorageSyncStore({ key: 'discord_tokens' }),
+		chromeStorageSyncStore({ key: 'discord_info' }),
+		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: cookie }),
+		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({cookie}) }),
+	]);
+	console.log('ApplicationStoreManager initialized');
+	console.log(stores);
 
 	if (!auth.currentUser) await firebaseSignIn();
 	console.log(auth?.currentUser?.uid);

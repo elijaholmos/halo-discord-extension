@@ -1,11 +1,11 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { ref, set, update, child } from 'firebase/database';
-import { discord_info, discord_tokens } from '../stores';
+import { child, ref, set, update } from 'firebase/database';
+import {stores} from '../stores';
 import credentials from './credentials';
 import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
-export const fetchDiscordUser = async function ({ access_token, token_type } = discord_tokens.get()) {
+export const fetchDiscordUser = async function ({ access_token, token_type } = stores.discord_tokens.get()) {
 	try {
 		const res = await fetch(`https://discord.com/api/users/@me`, {
 			headers: {
@@ -22,7 +22,7 @@ export const fetchDiscordUser = async function ({ access_token, token_type } = d
 	}
 };
 
-export const refreshDiscordToken = async function ({ refresh_token } = discord_tokens.get()) {
+export const refreshDiscordToken = async function ({ refresh_token } = stores.discord_tokens.get()) {
 	try {
 		//get an access token using the refresh token
 		const res = await fetch(`${url}/refresh`, {
@@ -39,7 +39,7 @@ export const refreshDiscordToken = async function ({ refresh_token } = discord_t
 
 		const { access_token } = tokens;
 		//store token locally
-		discord_tokens.set(tokens);
+		stores.discord_tokens.set(tokens);
 		//store tokens in DB
 		update(ref(db, `discord_tokens/${auth.currentUser.uid}`), tokens);
 
@@ -82,9 +82,9 @@ export const triggerDiscordAuthFlow = function () {
 			console.log(tokens);
 			//store tokens locally
 			//chrome.storage.sync.set({ discord_access: tokens.access_token });
-			discord_info.update({ access_token });
+			stores.discord_info.update({ access_token });
 			//chrome.storage.sync.set({ discord: tokens });
-			discord_tokens.set(tokens);
+			stores.discord_tokens.set(tokens);
 
 			//fetch Discord user info
 			const { id: discord_uid } = await fetchDiscordUser(tokens);
@@ -105,7 +105,7 @@ export const triggerDiscordAuthFlow = function () {
 
 			//store discord id locally (triggers background.js which requires user to be created in DB)
 			//await chrome.storage.sync.set({ discord_uid: discord_user.id });
-			discord_info.update({ discord_uid });
+			stores.discord_info.update({ discord_uid });
 
 			//collect halo cookies and store in db BEFORE setting user info in firebase but AFTER authenticating user
 			//this is due to the watcher in place by the bot

@@ -1,9 +1,10 @@
 <script>
-	import { test, test2 } from '../stores';
+	import {stores} from '../stores';
 	import { fetchDiscordUser } from '../util/auth';
 	import { getCookie, getUserId, getUserOverview } from '../util/halo';
 	import LazyLoader from './LazyLoader.svelte';
 	import Navbar from './Navbar.svelte';
+	const { test, test2 } = stores//.getMany(['test', 'test2']);
 	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
 	$: ({ a } = $test);
 	//console.log($test, $test2);

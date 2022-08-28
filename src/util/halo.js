@@ -1,5 +1,7 @@
 // temporary until extracted into separate npm module
 
+export const AUTHORIZATION_KEY = 'TE1TX0FVVEg';
+export const CONTEXT_KEY = 'TE1TX0NPTlRFWFQ';
 const url = {
 	gateway: 'https://gateway.halo.gcu.edu',
 	validate: 'https://halo.gcu.edu/api/token-validate/',
@@ -61,6 +63,29 @@ export const getUserId = async function ({ cookie }) {
 	//Error handling and data validation could be improved
 	if (res.error) return console.error(res.error);
 	return res.payload.userid;
+};
+
+export const getHaloUserInfo = async function ({ cookie }) {
+	const res = await (
+		await fetch(url.validate, {
+			method: 'POST',
+			headers: {
+				accept: '*/*',
+				'content-type': 'application/json',
+				authorization: `Bearer ${cookie.TE1TX0FVVEg}`,
+				contexttoken: `Bearer ${cookie.TE1TX0NPTlRFWFQ}`,
+			},
+			body: JSON.stringify({
+				userToken: cookie.TE1TX0FVVEg,
+				contextToken: cookie.TE1TX0NPTlRFWFQ,
+			}),
+		})
+	).json();
+
+	if (res?.errors?.[0]?.message?.includes('401')) throw { code: 401, cookie };
+	//Error handling and data validation could be improved
+	if (res.error) return console.error(res.error);
+	return res.payload;
 };
 
 export const getCookie = async function () {

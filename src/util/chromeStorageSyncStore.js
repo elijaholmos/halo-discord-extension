@@ -8,23 +8,6 @@ import { writable } from 'svelte/store';
  */
 class ChromeStorageSyncStore {
 	constructor({ key, initial_value }) {
-		console.log(`creating ${key} store`);
-		this.key = key;
-		this.store = writable(initial_value);
-		this.value = null;
-
-		chrome.storage.onChanged.addListener(
-			(changes, areaName) =>
-				areaName === 'sync' && changes.hasOwnProperty(key) && this.#setStoreOnly(changes[key].newValue)
-		);
-
-		chrome.storage.sync.get(key, (item) => {
-			console.log(`in callback for ${key}`, initial_value, item);
-			//if initial_value null, load from localstorage (if localstorage item exists)
-			initial_value === null && !!Object.keys(item).length ? this.set(item[key]) : this.set(initial_value);
-		});
-
-		return this;
 		return (async () => {
 			console.log(`creating ${key} store`);
 			this.key = key;
@@ -33,14 +16,18 @@ class ChromeStorageSyncStore {
 
 			chrome.storage.onChanged.addListener(
 				(changes, areaName) =>
-					areaName === 'sync' && changes.hasOwnProperty(key) && this.setStoreOnly(changes[key].newValue)
+					areaName === 'sync' && changes.hasOwnProperty(key) && this.#setStoreOnly(changes[key].newValue)
 			);
 
+			// chrome.storage.sync.get(key, (item) => {
+			// 	console.log(`in callback for ${key}`, initial_value, item);
+			// 	//if initial_value null, load from localstorage (if localstorage item exists)
+			// 	initial_value === null && !!Object.keys(item).length ? this.set(item[key]) : this.set(initial_value);
+			// });
 			const item = await chrome.storage.sync.get(key);
 			console.log(`in callback for ${key}`, initial_value, item);
 			//if initial_value null, load from localstorage (if localstorage item exists)
 			initial_value === null && !!Object.keys(item).length ? this.set(item[key]) : this.set(initial_value);
-
 			return this;
 		})();
 	}
@@ -80,9 +67,9 @@ class ChromeStorageSyncStore {
 
 // if initial_value null, will attempt to load from browser storage
 // if initial_value is a function, function will be called and return value passed into store
-export default function ({ key, initial_value = null } = {}) {
-	//initial_value instanceof Function && (initial_value = await initial_value());
-	const custom_store = new ChromeStorageSyncStore({ key, initial_value });
+export default async function ({ key, initial_value = null } = {}) {
+	initial_value instanceof Function && (initial_value = await initial_value());
+	const custom_store = await new ChromeStorageSyncStore({ key, initial_value });
 	let {
 		store: { subscribe },
 		get,
@@ -93,5 +80,5 @@ export default function ({ key, initial_value = null } = {}) {
 	set = set.bind(custom_store);
 	update = update.bind(custom_store);
 
-	return { subscribe, get, set, update };
+	return { key, subscribe, get, set, update };
 }
