@@ -79,7 +79,7 @@ export const updateUserSettings = async function (settings) {
 	console.log('updateUserSettings');
 	const { uid } = auth.currentUser || {};
 	if (!uid) throw new Error('Cannot update user settings; user is not signed in');
-	await set(ref(db, `settings/${uid}`), settings);
+	await update(ref(db, `settings/${uid}`), settings);
 };
 
 const convertDiscordAuthCodeToToken = async function ({ auth_code }) {

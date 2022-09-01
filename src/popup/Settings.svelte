@@ -14,6 +14,16 @@
 	let classes = [];
 	let default_settings;
 	let user_settings;
+	let isSyncingSettings = false;
+
+	const syncUserSettings = async function () {
+		if (isSyncingSettings) return console.log('already syncing settings');
+		isSyncingSettings = true;
+		await updateUserSettings(user_settings);
+		//wait longer to prevent excessive writes to db
+		await (() => new Promise(resolve => setTimeout(resolve, 1000)))();
+		isSyncingSettings = false;
+	};
 
 	const lazyLoad = async function () {
 		user = await fetchDiscordUser();
@@ -55,11 +65,13 @@
 				<input type="checkbox" class="toggle toggle-primary" bind:checked={user_settings[id]} />
 			</label>
 		{/each}
-		
-		<button class="btn btn-primary btn-sm" on:click={() => updateUserSettings(user_settings)}>Save</button>
-		
+		<!-- TODO: SETTINGS need to be throttle protected -->
+		<button class="btn btn-primary btn-sm" class:loading={isSyncingSettings} on:click={syncUserSettings}>
+			Save Settings
+		</button>
+
 		<!-- {JSON.stringify($halo_cookies)} -->
-		{JSON.stringify(user_settings)}
+		<!-- {JSON.stringify(user_settings)}
 		{a}
 		{$test2}
 		<button
@@ -69,6 +81,6 @@
 				test2.set(-Date.now());
 			}}
 			>Click
-		</button>
+		</button> -->
 	</div>
 </LazyLoader>
