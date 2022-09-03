@@ -33,7 +33,7 @@
 		const uid = await getUserId({ cookie });
 		const class_res = await getUserOverview({ uid, cookie });
 		console.log(class_res);
-		for (const { classCode } of class_res.classes.courseClasses) classes.push(classCode);
+		for (const { courseCode } of class_res.classes.courseClasses) classes.push(courseCode);
 
 		// settings
 		default_settings = await getDefaultSettings();
