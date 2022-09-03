@@ -97,6 +97,7 @@ const convertDiscordAuthCodeToToken = async function ({ auth_code }) {
 };
 
 export const triggerDiscordAuthFlow = function () {
+	// CHROME RESTRICTION: is documented as returning a promise, does not actually return a promise
 	chrome.identity.launchWebAuthFlow(
 		{
 			url: `https://discord.com/api/oauth2/authorize?response_type=code&client_id=${

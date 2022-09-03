@@ -88,8 +88,8 @@ web_modules/
 out
 
 # Rollup output
+build
 dist
-dist_packed
 
 # Gatsby files
 .cache/

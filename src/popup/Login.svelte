@@ -1,5 +1,7 @@
 <script>
-	import { triggerDiscordAuthFlow } from '../util/auth';
+	const launchAuthFlow = function () {
+		return chrome.runtime.sendMessage('launch_auth');
+	};
 </script>
 
 <div class="flex flex-col items-center">
@@ -10,7 +12,7 @@
 		id="login-button"
 		class="dsl-discord-btn"
 		title="Login with Discord"
-		on:click={triggerDiscordAuthFlow}
+		on:click={launchAuthFlow}
 	>
 		<span class="dsl-discord-btn-icon" />
 		<span>Login with Discord</span>
