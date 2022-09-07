@@ -5,20 +5,21 @@ import credentials from './credentials';
 import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
-export const fetchDiscordUser = async function ({ access_token, token_type } = stores.discord_tokens.get()) {
+export const fetchDiscordUser = async function ({ access_token, token_type, count=0 } = stores.discord_tokens.get()) {
 	try {
-		const res = await fetch(`https://discord.com/api/users/@me`, {
-			headers: {
-				Authorization: `${token_type || 'Bearer'} ${access_token}`,
-			},
+		const res = await fetch(`${url}/me`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: new URLSearchParams({ access_token }).toString(),
 		});
 
 		if (res.status === 401 || res.status === 403) return await refreshDiscordToken().then(fetchDiscordUser);
 
 		return await res.json();
 	} catch (err) {
-		console.error(err);
-		return null;
+		console.error(err, `Count: ${count++}`);
+		if(count >= 5) return null;
+		return await fetchDiscordUser({ count });
 	}
 };
 
