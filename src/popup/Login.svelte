@@ -5,7 +5,7 @@
 </script>
 
 <div class="flex flex-col items-center">
-	<img src="../static/icon.png" alt="HNS Logo" class="w-24 h-24 mb-4" />
+	<img src="../static/icon-128.png" alt="HNS Logo" class="w-24 h-24 mb-4" />
 	<h1 class="text-xl">Welcome!</h1>
 	<span class="h-4" />
 	<a
