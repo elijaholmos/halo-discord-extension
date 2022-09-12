@@ -8,7 +8,7 @@
 	"scripts": {
 		"test:chrome": "rollup -c -w --configChrome",
 		"test:firefox": "rollup -c -w --configFirefox",
-		"build": "pnpm run chrome && pnpm run firefox",
+		"build": "pnpm run build:chrome && pnpm run build:firefox",
 		"build:chrome": "rollup -c --configChrome && zip-build build/chrome dist -t %NAME%-%VERSION%-chrome.%EXT%",
 		"build:firefox": "rollup -c --configFirefox && zip-build build/firefox dist -t %NAME%-%VERSION%-firefox.%EXT%"
 	},
