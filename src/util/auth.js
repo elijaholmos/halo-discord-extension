@@ -68,7 +68,7 @@ export const getUserSettings = async function () {
 		console.log('getUserSettings');
 		const { uid } = auth.currentUser || {};
 		if (!uid) throw new Error('Cannot retrieve user settings; user is not signed in');
-		const settings = await get(ref(db, `settings/${uid}`));
+		const settings = await get(ref(db, `user_settings/${uid}`));
 		return settings.exists() ? settings.val() : {};
 	} catch (e) {
 		console.error('getUserSettings error', e);
@@ -80,7 +80,7 @@ export const updateUserSettings = async function (settings) {
 	console.log('updateUserSettings');
 	const { uid } = auth.currentUser || {};
 	if (!uid) throw new Error('Cannot update user settings; user is not signed in');
-	await update(ref(db, `settings/${uid}`), settings);
+	await update(ref(db, `user_settings/${uid}`), settings);
 };
 
 const convertDiscordAuthCodeToToken = async function ({ auth_code }) {
