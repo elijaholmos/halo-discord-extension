@@ -1,23 +1,25 @@
-import { initializeApp, getApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
-import creds from './credentials.js';
+import credentials from './credentials';
 
-export default async function util() {
+const app = initializeApp(credentials.firebase);
+export const auth = getAuth(app);
+export const db = getDatabase(app);
+
+export const getHaloCookies = async function () {
 	try {
-		const credentials = await creds();
-		// Initialize Firebase
-		const app = initializeApp(credentials.firebase);
-		const auth = getAuth(app);
-		const db = getDatabase(app);
-
-		return {
-			credentials,
-			app,
-			auth,
-			db,
-		};
+		console.log('getHaloCookies');
+		const cookies = (await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' }))
+			.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {});
+		// for (const cookie of cookies) {
+		// 	await chrome.storage.sync.set({ [cookie.name]: cookie.value });
+		// 	!!auth.currentUser &&
+		// 		(await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value));
+		// }
+		return cookies;
 	} catch (e) {
-		console.error(e);
+		console.log('getHaloCookies error', e);
+		return {};
 	}
-}
+};

@@ -1,96 +1,97 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { ref, set, child, update, } from 'firebase/database';
 // https://firebase.google.com/docs/web/setup#available-libraries
-import util from './util/util.js';
+import { compare } from 'compare-versions';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { child, ref, set } from 'firebase/database';
+import { init, stores } from './stores';
+import { triggerDiscordAuthFlow } from './util/auth';
+import chromeStorageSyncStore from './util/chromeStorageSyncStore';
+import { getHaloUserInfo } from './util/halo';
+import { auth, db, getHaloCookies } from './util/util';
+// no stores - code is not shared between background and popup
 
-//IIFE to get top-level await
-(async () => {
-    const { 
-        credentials,
-        auth,
-        db,
-    } = await util();
+const VERSION = chrome.runtime.getManifest().version;
+const COOKIE_KEY = 'halo_cookies';
+const firebaseSignIn = async function () {
+	console.log('in firebaseSignIn');
+	try {
+		const { discord_uid, access_token } = stores.discord_info.get();
+		if (!discord_uid) throw new Error('no discord_uid');
+		if (!access_token) throw new Error('no access_token');
+		await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, access_token);
+	} catch (e) {
+		console.warn('Firebase signin failed', e);
+	}
+};
 
-    const sweepHaloCookies = async function () {
-        try {
-            console.log('sweeping cookies');
-            const cookies = await chrome.cookies.getAll({
-                url: 'https://halo.gcu.edu',
-            });
-            for(const cookie of cookies) {
-                await chrome.storage.sync.set({[cookie.name]: cookie.value});
-                auth.currentUser && await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value);
-            }
-        } catch(e) {
-            console.log(e);
-        }
-        return;
-    };
+(async function () {
+	console.log(`${chrome.runtime.getManifest().name} v${VERSION}`);
 
-    (async function main() {
-        console.log('in beginning of main')
-        const { discord_uid, discord_access } = await chrome.storage.sync.get(['discord_uid', 'discord_access']);
-        if(!discord_uid || !discord_access) return setTimeout(main, 1000);
-        try {
-            console.log('attempting to login');
-            await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, discord_access);
-            console.log(auth.currentUser);
-        } catch (e) {
-            console.error(e);
-            return setTimeout(main, 1000);
-        }
+	// check & clear localstorage
+	const { last_cleared_version } = await chrome.storage.sync.get('last_cleared_version');
+	if (!last_cleared_version || compare(last_cleared_version, '2.0.0', '<')) {
+		console.log('clearing local storage');
+		await chrome.storage.sync.clear();
+		chrome.storage.sync.set({ last_cleared_version: VERSION });
+	}
 
-        //set uninstall URL so DB can be cleared
-        chrome.runtime.setUninstallURL(
-            `http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
-                discord_uid,
-                discord_access,
-            }).toString()}`
-        );
-        
-        //watch for cookie updates
-        //store cookies locally to compare changes
-        chrome.cookies.onChanged.addListener(async ({cookie}) => {
-            //what about when cookie.value === null/undefined?
-            if(cookie.domain !== 'halo.gcu.edu') return;
-            if((await chrome.storage.sync.get(cookie.name))[cookie.name] === cookie.value) return console.log(`found dup cookie: ${cookie.name}`);
-            await sweepHaloCookies();
-        });
-        //console.log(auth.currentUser);
-        //await triggerDiscordAuthFlow();
-        //const { claims } = await user.getIdTokenResult();
-        //console.log(claims);
-        //console.log(credentials);
-    })();
+	console.log('initializing ApplicationStoreManager');
+	const initial_cookies = await getHaloCookies();
+	await init([
+		//chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
+		//chromeStorageSyncStore({ key: 'test2' }),
+		chromeStorageSyncStore({ key: 'discord_tokens' }),
+		chromeStorageSyncStore({ key: 'discord_info' }),
+		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: initial_cookies }),
+		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
+	]);
+	console.log('ApplicationStoreManager initialized');
+	console.log(stores);
 
-    const refreshDiscordToken = async function (refresh_token) {
-        try {
-            //get an access token using the refresh token
-            const res = await fetch('https://discord.com/api/oauth2/token', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    ...credentials.discord,
-                    grant_type: 'refresh_token',
-                    refresh_token,
-                }),
-            });
+	// FIREFOX RESTRICTION: popup is closed during auth, so it needs to be triggered from background script
+	chrome.runtime.onMessage.addListener((msg) => {
+		console.log(`msg === 'launch_auth' - ${msg === 'launch_auth'}`)
+		console.log(`!auth.currentUser - ${!auth.currentUser}`)
+		msg === 'launch_auth' && !auth.currentUser && triggerDiscordAuthFlow()
+	});
 
-            //get json response
-            const res_json = await res.json();
-            
-            //store token locally
-            chrome.storage.sync.set({discord: res_json});
-            //store tokens in DB
-            update(ref(db, `discord_tokens/${auth.currentUser.uid}`), res_json);
+	if (!auth.currentUser) await firebaseSignIn();
+	console.log(auth?.currentUser?.uid);
 
-            console.log(`Refreshed access token: ${res_json.access_token}`);
+	//halo_cookies.set(await getHaloCookies()); //should be unnecessary w initial_value
 
-            //lastly, return the access token
-            return res_json.access_token;
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    };
+	// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
+	chrome.runtime.onInstalled.addListener(
+		({ reason }) => reason === chrome.runtime.OnInstalledReason.INSTALL && chrome.action.openPopup()
+	);
+
+	//sweeps halo cookies, updates local stores & DB
+	const sweepHaloCookies = async function () {
+		try {
+			console.log('sweeping cookies');
+			const cookies = await chrome.cookies.getAll({
+				url: 'https://halo.gcu.edu',
+			});
+			for (const cookie of cookies) {
+				await chrome.storage.sync.set({ [cookie.name]: cookie.value });
+				!!auth.currentUser &&
+					(await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value));
+			}
+		} catch (e) {
+			console.log(e);
+		}
+		return;
+	};
+
+	//watch for cookie updates
+	//store cookies locally to compare changes
+	chrome.cookies.onChanged.addListener(async ({ cookie }) => {
+		console.log('cookie changed');
+		//what about when cookie.value === null/undefined?
+		if (cookie.domain !== 'halo.gcu.edu') return;
+		const stored_cookie = (await chrome.storage.sync.get(COOKIE_KEY))[COOKIE_KEY]; //check store instead?
+		if (stored_cookie[cookie.name] === cookie.value) return console.log(`found dup cookie: ${cookie.name}`);
+		stores.halo_cookies.update({ [cookie.name]: cookie.value });
+		//refresh halo user info in case of login/logout
+		stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
+	});
 })();

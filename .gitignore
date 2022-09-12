@@ -88,8 +88,8 @@ web_modules/
 out
 
 # Rollup output
+build
 dist
-dist_packed
 
 # Gatsby files
 .cache/
@@ -130,4 +130,4 @@ dist_packed
 credentials*
 
 # temp files on local machine
-src/static/tmp
+tmp/
