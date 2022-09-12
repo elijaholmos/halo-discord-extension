@@ -13,7 +13,7 @@
 		"build:firefox": "rollup -c --configFirefox && zip-build build/firefox dist -t %NAME%-%VERSION%-firefox.%EXT%"
 	},
 	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^13.3.0",
+		"@rollup/plugin-node-resolve": "^14.0.1",
 		"@rollup/plugin-replace": "^4.0.0",
 		"@types/chrome": "^0.0.193",
 		"autoprefixer": "^10.4.8",
