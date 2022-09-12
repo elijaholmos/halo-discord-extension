@@ -3,7 +3,7 @@
     lazyLoad is fulfilled (or rejected) 
 -->
 <script>
-import Error from "./Error.svelte";
+	import Error from './Error.svelte';
 
 	export let lazyLoad = () => {};
 </script>

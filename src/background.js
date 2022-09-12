@@ -28,7 +28,7 @@ const firebaseSignIn = async function () {
 
 	// check & clear localstorage
 	const { last_cleared_version } = await chrome.storage.sync.get('last_cleared_version');
-	if (!last_cleared_version || compare(last_cleared_version, '1.1.0', '<')) {
+	if (!last_cleared_version || compare(last_cleared_version, '2.0.0', '<')) {
 		console.log('clearing local storage');
 		await chrome.storage.sync.clear();
 		chrome.storage.sync.set({ last_cleared_version: VERSION });
@@ -37,8 +37,8 @@ const firebaseSignIn = async function () {
 	console.log('initializing ApplicationStoreManager');
 	const initial_cookies = await getHaloCookies();
 	await init([
-		chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
-		chromeStorageSyncStore({ key: 'test2' }),
+		//chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
+		//chromeStorageSyncStore({ key: 'test2' }),
 		chromeStorageSyncStore({ key: 'discord_tokens' }),
 		chromeStorageSyncStore({ key: 'discord_info' }),
 		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: initial_cookies }),
@@ -53,8 +53,6 @@ const firebaseSignIn = async function () {
 		console.log(`!auth.currentUser - ${!auth.currentUser}`)
 		msg === 'launch_auth' && !auth.currentUser && triggerDiscordAuthFlow()
 	});
-
-	console.log(() => console.log(stores.test.get()));
 
 	if (!auth.currentUser) await firebaseSignIn();
 	console.log(auth?.currentUser?.uid);

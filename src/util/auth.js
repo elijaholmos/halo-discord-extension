@@ -5,7 +5,7 @@ import credentials from './credentials';
 import { auth, db } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
-export const fetchDiscordUser = async function ({ access_token, token_type, count=0 } = stores.discord_tokens.get()) {
+export const fetchDiscordUser = async function ({ access_token, count = 0 } = stores.discord_tokens.get()) {
 	try {
 		const res = await fetch(`${url}/me`, {
 			method: 'POST',
@@ -18,7 +18,7 @@ export const fetchDiscordUser = async function ({ access_token, token_type, coun
 		return await res.json();
 	} catch (err) {
 		console.error(err, `Count: ${count++}`);
-		if(count >= 5) return null;
+		if (count >= 5) return null;
 		return await fetchDiscordUser({ count });
 	}
 };

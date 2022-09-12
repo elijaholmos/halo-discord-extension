@@ -43,12 +43,7 @@ const chrome = defineConfig({
 		replace({
 			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
 		}),
-		license({
-			//sourcemap: true,
-			banner: {
-				content: 'this is a test',
-			},
-		}),
+		//license({}),
 		copy({
 			targets: [
 				{
@@ -111,12 +106,6 @@ const firefox = defineConfig({
 		}),
 		replace({
 			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
-		}),
-		license({
-			//sourcemap: true,
-			banner: {
-				content: 'this is a test',
-			},
 		}),
 		copy({
 			targets: [

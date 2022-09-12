@@ -1,13 +1,11 @@
 <script>
 	import { stores } from '../stores';
-	import { fetchDiscordUser, getDefaultSettings, getUserSettings, updateUserSettings } from '../util/auth';
-	import { getCookie, getUserId, getUserOverview } from '../util/halo';
+	import { fetchDiscordUser,getDefaultSettings,getUserSettings,updateUserSettings } from '../util/auth';
+	import { getUserId,getUserOverview } from '../util/halo';
 	import LazyLoader from './LazyLoader.svelte';
 	import Navbar from './Navbar.svelte';
-	const { test, test2, halo_cookies } = stores;
+	const { halo_cookies } = stores;
 	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
-	$: ({ a } = $test);
-	//console.log($test, $test2);
 
 	// ----- state -----
 	let user;
@@ -17,11 +15,11 @@
 	let isSyncingSettings = false;
 
 	const syncUserSettings = async function () {
-		if (isSyncingSettings) return console.log('already syncing settings');
+		if (isSyncingSettings) return;
 		isSyncingSettings = true;
 		await updateUserSettings(user_settings);
-		//wait longer to prevent excessive writes to db
-		await (() => new Promise(resolve => setTimeout(resolve, 1000)))();
+		//wait longer than necessary to prevent excessive writes to db
+		await (() => new Promise((resolve) => setTimeout(resolve, 1000)))();
 		isSyncingSettings = false;
 	};
 
@@ -65,22 +63,8 @@
 				<input type="checkbox" class="toggle toggle-primary" bind:checked={user_settings[id]} />
 			</label>
 		{/each}
-		<!-- TODO: SETTINGS need to be throttle protected -->
 		<button class="btn btn-primary btn-sm" class:loading={isSyncingSettings} on:click={syncUserSettings}>
 			Save Settings
 		</button>
-
-		<!-- {JSON.stringify($halo_cookies)} -->
-		<!-- {JSON.stringify(user_settings)}
-		{a}
-		{$test2}
-		<button
-			on:click={() => {
-				console.log(test.get());
-				test.update({ ree: 'ree', a: Date.now() });
-				test2.set(-Date.now());
-			}}
-			>Click
-		</button> -->
 	</div>
 </LazyLoader>
