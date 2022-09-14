@@ -1,0 +1,13 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		":ignoreModulesAndTests",
+		":autodetectPinVersions",
+		":prConcurrentLimit10",
+		"group:recommended",
+		"workarounds:all",
+		":semanticCommitType(chore)"
+	],
+	"automerge": true,
+	"automergeStrategy": "squash"
+}
