@@ -9,5 +9,7 @@
 		":semanticCommitType(chore)"
 	],
 	"automerge": true,
-	"automergeStrategy": "squash"
+	"automergeType": "pr",
+	"automergeStrategy": "squash",
+	"platformAutomerge": true
 }
