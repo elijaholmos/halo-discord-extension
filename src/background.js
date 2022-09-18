@@ -57,7 +57,7 @@ const firebaseSignIn = async function () {
 		//chromeStorageSyncStore({ key: 'test2' }),
 		chromeStorageSyncStore({ key: 'discord_tokens' }),
 		chromeStorageSyncStore({ key: 'discord_info' }),
-		chromeStorageSyncStore({ key: 'halo_cookies', initial_value: initial_cookies }),
+		chromeStorageSyncStore({ key: COOKIE_KEY, initial_value: initial_cookies }),
 		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
 	]);
 	console.log('ApplicationStoreManager initialized');
@@ -65,9 +65,8 @@ const firebaseSignIn = async function () {
 
 	// FIREFOX RESTRICTION: popup is closed during auth, so it needs to be triggered from background script
 	chrome.runtime.onMessage.addListener((msg) => {
-		console.log(`msg === 'launch_auth' - ${msg === 'launch_auth'}`)
-		console.log(`!auth.currentUser - ${!auth.currentUser}`)
-		msg === 'launch_auth' && !auth.currentUser && triggerDiscordAuthFlow()
+		console.log(`!auth.currentUser - ${!auth.currentUser}`);
+		msg === 'launch_auth' && !auth.currentUser && triggerDiscordAuthFlow();
 	});
 
 	if (!auth.currentUser) await firebaseSignIn();
@@ -101,13 +100,45 @@ const firebaseSignIn = async function () {
 	//watch for cookie updates
 	//store cookies locally to compare changes
 	chrome.cookies.onChanged.addListener(async ({ cookie }) => {
-		console.log('cookie changed');
+		console.log(`cookie changed: ${cookie.name}`);
 		//what about when cookie.value === null/undefined?
 		if (cookie.domain !== 'halo.gcu.edu') return;
-		const stored_cookie = (await chrome.storage.sync.get(COOKIE_KEY))[COOKIE_KEY]; //check store instead?
-		if (stored_cookie[cookie.name] === cookie.value) return console.log(`found dup cookie: ${cookie.name}`);
-		stores.halo_cookies.update({ [cookie.name]: cookie.value });
-		//refresh halo user info in case of login/logout
-		stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
+		const stored_cookie = stores.halo_cookies.get(cookie.name); //assumes store is in sync with localstorage
+		if (stored_cookie[cookie.name] !== cookie.value) {
+			//filter duplicates to avoid extra work
+			console.log(`found non-dup cookie: ${cookie.name}`);
+			stores.halo_cookies.update({ [cookie.name]: cookie.value });
+			//refresh halo user info in case of login/logout
+			stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
+		}
+
+		// push cookies to db every 12h
+		await pushCookiesToDatabase();
 	});
+
+	// push cookies to db every 12h
+	let currently_pushing_cookies = false;
+	const pushCookiesToDatabase = async function pushCookiesToDatabaseWrapper() {
+		if (currently_pushing_cookies) return;
+		currently_pushing_cookies = true;
+
+		await (async () => {
+			if (!auth?.currentUser) return;
+			//try testing this with a smaller interval
+			const COOKIE_PUSH_INTERVAL = 1000 * 60 * 60 * 12; //12h
+			const { last_cookie_push } = await chrome.storage.sync.get('last_cookie_push');
+			if (!last_cookie_push) return await chrome.storage.sync.set({ last_cookie_push: Date.now() });
+			if (Date.now() - last_cookie_push < COOKIE_PUSH_INTERVAL) return;
+
+			//retrieve new cookies and merge w old ones
+			const cookies = await getHaloCookies();
+			stores.halo_cookies.update(cookies);
+			//push to db
+			await set(ref(db, `cookies/${auth.currentUser.uid}`), cookies);
+			//update last_cookie_push
+			await chrome.storage.sync.set({ last_cookie_push: Date.now() });
+		})();
+		currently_pushing_cookies = false; //as soon as IIFE returns, set currently_pushing_cookies to false
+	};
+	pushCookiesToDatabase(); //call whenever background script is loaded
 })();
