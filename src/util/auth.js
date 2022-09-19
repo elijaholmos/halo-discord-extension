@@ -15,10 +15,10 @@
  */
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { child, get, ref, set, update } from 'firebase/database';
+import { get, ref, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
-import { auth, db } from './util';
+import { auth, db, getHaloCookies } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
 export const fetchDiscordUser = async function ({ access_token, count = 0 } = stores.discord_tokens.get()) {
@@ -161,14 +161,11 @@ export const triggerDiscordAuthFlow = function () {
 			//await sweepHaloCookies();
 			try {
 				console.log('sweeping cookies - initial');
-				const cookies = await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' });
-				//could this be mapped into an object than set in a single write?
-				for (const cookie of cookies) {
-					stores.halo_cookies.update({ [cookie.name]: cookie.value });
-					!!user && (await set(child(ref(db, `cookies/${user.uid}`), cookie.name), cookie.value));
-				}
+				const cookies = await getHaloCookies();
+				stores.halo_cookies.update(cookies);
+				!!user && (await set(ref(db, `cookies/${user.uid}`), cookies));
 			} catch (e) {
-				console.log(e);
+				console.error('[error] sweping cookies initial', e);
 			}
 
 			//set user info in Firebase
