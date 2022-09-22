@@ -1,11 +1,17 @@
-name: Secret Scan
+name: Code Scan
 on:
-    pull_request:
     push:
+        branches: [dev]
+    pull_request:
     workflow_dispatch:
 
 jobs:
+    detect-duplicate-actions:
+        uses: .github/workflows/.detect-duplicate-actions.yml
     gitleaks:
+        name: gitleaks
+        needs: detect-duplicate-actions
+        if: ${{ needs.detect-duplicate-actions.outputs.should_skip != 'true' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
