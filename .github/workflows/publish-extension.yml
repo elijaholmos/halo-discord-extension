@@ -1,32 +1,28 @@
 name: Publish Extension
 on:
-  workflow_dispatch:
-  # release:
-  #   types: [published]
-  push:
+    workflow_dispatch:
+    # release:
+    #   types: [published]
+    push:
 
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.3.1
-        with:
-          envkey_CREDENTIALS: ${{ secrets.CREDENTIALS }}
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.2
-        with:
-          version: latest
-      - name: Install deps
-        run: pnpm i --frozen-lockfile
-      - name: Check NODE_ENV
-        run: echo $NODE_ENV
-      - name: Build extension
-        run: pnpm run build
-      - name: check results
-        run: tree -fi
-      # - name: Publish extension with Plasmo
-      #   uses: PlasmoHQ/bpp@v2
-      #   with:
-      #     keys: ${{ secrets.BPP_KEYS }}
+    build-and-publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Create .env file
+              uses: SpicyPizza/create-envfile@v1.3.1
+              with:
+                  envkey_CREDENTIALS: ${{ secrets.CREDENTIALS }}
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.2.2
+              with:
+                  version: latest
+            - name: Install deps
+              run: pnpm i --frozen-lockfile
+            - name: Build extension
+              run: pnpm run build
+            - name: Publish extension with Plasmo
+              uses: PlasmoHQ/bpp@v2
+              with:
+                  keys: ${{ secrets.BPP_KEYS }}
