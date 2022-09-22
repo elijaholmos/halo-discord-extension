@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   # release:
   #   types: [published]
+  push:
 
 jobs:
   build:
