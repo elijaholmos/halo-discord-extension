@@ -127,7 +127,7 @@ dist
 .pnp.*
 
 # credentials
-credentials*
+credentials/
 
 # temp files on local machine
 tmp/
