@@ -7,7 +7,7 @@ on:
 
 jobs:
     detect-duplicate-actions:
-        uses: .github/workflows/.detect-duplicate-actions.yml
+        uses: .github/workflows/detect-duplicate-actions.yml
     gitleaks:
         name: gitleaks
         needs: detect-duplicate-actions

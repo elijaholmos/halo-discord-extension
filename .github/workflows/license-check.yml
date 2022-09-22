@@ -9,7 +9,7 @@ on:
 
 jobs:
     detect-duplicate-actions:
-        uses: .github/workflows/.detect-duplicate-actions.yml
+        uses: .github/workflows/detect-duplicate-actions.yml
     check-license-headers:
         name: check-license-headers
         needs: detect-duplicate-actions
