@@ -17,7 +17,7 @@
 import { bold, green } from 'colorette';
 import { strToU8, zip as zipCb } from 'fflate';
 import filesize from 'filesize';
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { relative } from 'node:path';
 import { promisify } from 'node:util';
 import { OutputOptions } from 'rollup';
@@ -57,6 +57,8 @@ export default function zip(options) {
 					{}
 				)
 			);
+			//create dir if it does not exist
+			await mkdir(`./${relative(process.cwd(), dir)}`, { recursive: true });
 			await writeFile(`./${relative(process.cwd(), dir)}/${fileName}`, data);
 			console.log(green(`zipped to ${bold(`${dir}/${fileName}`)} (${filesize(data.byteLength)})`));
 		},
