@@ -14,11 +14,4 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { reconstruct } from '../stores';
-import Popup from './Popup.svelte';
-import './style.css';
-
-// NEEDS to be called for stores to be shared between background & popup
-await reconstruct();
-
-export default new Popup({ target: document.body });
+export default __CREDENTIALS__; //will be replced during build

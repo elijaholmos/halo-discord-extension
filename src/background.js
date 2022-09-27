@@ -59,14 +59,24 @@ const firebaseSignIn = async function () {
 		chromeStorageSyncStore({ key: 'discord_info' }),
 		chromeStorageSyncStore({ key: COOKIE_KEY, initial_value: initial_cookies }),
 		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
+		chromeStorageSyncStore({ key: 'require_discord_reauth' }),
 	]);
 	console.log('ApplicationStoreManager initialized');
 	console.log(stores);
 
 	// FIREFOX RESTRICTION: popup is closed during auth, so it needs to be triggered from background script
-	chrome.runtime.onMessage.addListener((msg) => {
-		console.log(`!auth.currentUser - ${!auth.currentUser}`);
-		msg === 'launch_auth' && !auth.currentUser && triggerDiscordAuthFlow();
+	chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+		(async () => {
+			try {
+				if (sender.id !== chrome.runtime.id) return console.log('ids are not equal');
+				console.log('auth.currentUser', auth.currentUser);
+				msg === 'launch_auth' && (await triggerDiscordAuthFlow());
+				sendResponse(null);
+			} catch (error) {
+				sendResponse(JSON.stringify(error?.message || error));
+			}
+		})();
+		return true; //required if using async/await in a message listener
 	});
 
 	if (!auth.currentUser) await firebaseSignIn();
@@ -74,10 +84,18 @@ const firebaseSignIn = async function () {
 
 	//halo_cookies.set(await getHaloCookies()); //should be unnecessary w initial_value
 
-	// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
-	chrome.runtime.onInstalled.addListener(
-		({ reason }) => reason === chrome.runtime.OnInstalledReason.INSTALL && chrome.action.openPopup()
-	);
+	chrome.runtime.onInstalled.addListener(({ reason }) => {
+		console.log('onInstalled', reason)
+		switch (reason) {
+			case chrome.runtime.OnInstalledReason.INSTALL:
+				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
+				chrome.action.openPopup();
+				break;
+			case chrome.runtime.OnInstalledReason.UPDATE:
+				!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/version`), VERSION);
+				break;
+		}
+	});
 
 	//sweeps halo cookies, updates local stores & DB
 	const sweepHaloCookies = async function () {
@@ -125,7 +143,7 @@ const firebaseSignIn = async function () {
 		await (async () => {
 			if (!auth?.currentUser) return;
 			//try testing this with a smaller interval
-			const COOKIE_PUSH_INTERVAL = 1000 * 60 * 60 * 12; //12h
+			const COOKIE_PUSH_INTERVAL = 1000 * 60 * 60 * 1; //1h
 			const { last_cookie_push } = await chrome.storage.sync.get('last_cookie_push');
 			if (!last_cookie_push) return await chrome.storage.sync.set({ last_cookie_push: Date.now() });
 			if (Date.now() - last_cookie_push < COOKIE_PUSH_INTERVAL) return;

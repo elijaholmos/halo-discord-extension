@@ -13,27 +13,31 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <script>
-	const launchAuthFlow = function () {
-		return chrome.runtime.sendMessage('launch_auth');
+	import Error from './Error.svelte';
+
+	//state
+	let error;
+
+	const launchAuthFlow = async function () {
+		const message = await chrome.runtime.sendMessage('launch_auth');
+		if (!!message) error = { message };
 	};
 </script>
 
-<div class="flex flex-col items-center">
-	<img src="../static/icon-128.png" alt="HNS Logo" class="w-24 h-24 mb-4" />
-	<h1 class="text-xl">Welcome!</h1>
-	<span class="h-4" />
-	<a
-		id="login-button"
-		class="dsl-discord-btn"
-		title="Login with Discord"
-		on:click={launchAuthFlow}
-	>
-		<span class="dsl-discord-btn-icon" />
-		<span>Login with Discord</span>
-	</a>
-</div>
+{#if error}
+	<Error {error} />
+{:else}
+	<div class="flex flex-col items-center">
+		<img src="../static/icon-128.png" alt="HNS Logo" class="w-24 h-24 mb-4" />
+		<h1 class="text-xl">Welcome!</h1>
+		<span class="h-4" />
+		<a id="login-button" class="dsl-discord-btn" title="Login with Discord" on:click={launchAuthFlow}>
+			<span class="dsl-discord-btn-icon" />
+			<span>Login with Discord</span>
+		</a>
+	</div>
+{/if}
 
 <style>
 	.dsl-discord-btn {

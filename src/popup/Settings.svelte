@@ -41,7 +41,8 @@
 
 	const lazyLoad = async function () {
 		user = await fetchDiscordUser();
-		console.log(user);
+		console.log('fetchDiscordUser', user);
+		if(!user) throw new Error('Unable to fetch Discord information, please close & reopen the popup');
 		//const cookie = await getCookie();
 		const cookie = halo_cookies.get();
 		const uid = await getUserId({ cookie });

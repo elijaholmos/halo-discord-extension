@@ -20,14 +20,16 @@ import { defineConfig } from 'rollup';
 import { chromeExtension, simpleReloader } from 'rollup-plugin-chrome-extension';
 import copy from 'rollup-plugin-copy';
 import { emptyDir } from 'rollup-plugin-empty-dir';
-import license from 'rollup-plugin-license';
 import postcss from 'rollup-plugin-postcss';
 import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
-import credentials from './credentials';
+import zip from './plugins/zip.plugin';
+import { config as dotenv_config } from 'dotenv';
+dotenv_config();
 
 const production = !process.env.ROLLUP_WATCH;
+const credentials = JSON.parse(process.env?.CREDENTIALS ?? null);
 
 const chrome = defineConfig({
 	input: 'src/manifest.json',
@@ -72,6 +74,7 @@ const chrome = defineConfig({
 			verbose: true,
 		}),
 		production && terser(),
+		production && zip({ fileName: 'chrome.zip', dir: 'dist' }),
 	],
 });
 
@@ -134,6 +137,8 @@ const firefox = defineConfig({
 			hook: 'writeBundle',
 			verbose: true,
 		}),
+		production && terser(),
+		production && zip({ fileName: 'firefox.zip', dir: 'dist' }),
 	],
 });
 
