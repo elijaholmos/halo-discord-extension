@@ -150,6 +150,7 @@ const firebaseSignIn = async function () {
 
 			//retrieve new cookies and merge w old ones
 			const cookies = await getHaloCookies();
+			if(!cookies || !Object.keys(cookies).length) return;	//don't push empty cookies
 			stores.halo_cookies.update(cookies);
 			//push to db
 			await set(ref(db, `cookies/${auth.currentUser.uid}`), cookies);
