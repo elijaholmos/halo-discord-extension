@@ -92,7 +92,7 @@ const firebaseSignIn = async function () {
 				chrome.action.openPopup();
 				break;
 			case chrome.runtime.OnInstalledReason.UPDATE:
-				!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/version`), VERSION);
+				!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
 				break;
 		}
 	});
