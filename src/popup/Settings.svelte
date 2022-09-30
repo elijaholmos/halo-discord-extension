@@ -16,12 +16,11 @@
 
 <script>
 	import { stores } from '../stores';
-	import { fetchDiscordUser,getDefaultSettings,getUserSettings,updateUserSettings } from '../util/auth';
-	import { getUserId,getUserOverview } from '../util/halo';
+	import { fetchDiscordUser, getDefaultSettings, getUserSettings, updateUserSettings } from '../util/auth';
+	import { getUserId, getUserOverview } from '../util/halo';
 	import LazyLoader from './LazyLoader.svelte';
 	import Navbar from './Navbar.svelte';
 	const { halo_cookies } = stores;
-	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
 
 	// ----- state -----
 	let user;

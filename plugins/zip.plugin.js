@@ -15,12 +15,11 @@
  */
 
 import { bold, green } from 'colorette';
-import { strToU8, zip as zipCb } from 'fflate';
+import { zip as zipCb } from 'fflate';
 import filesize from 'filesize';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { relative } from 'node:path';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { join, relative, sep } from 'node:path';
 import { promisify } from 'node:util';
-import { OutputOptions } from 'rollup';
 
 /**
  * @typedef ZipConfigOptions
@@ -28,6 +27,20 @@ import { OutputOptions } from 'rollup';
  * @property {string} fileName - name of output zip file
  * @property {string} [dir] - Output directory, defaults to rollup output directory
  */
+
+/**
+ * nifty method I adapted from https://stackoverflow.com/a/66083078/8396479
+ * @returns {Promise<string[]>}
+ */
+const walkDir = async function (dir) {
+	const res = [];
+	for await (const fname of (async function* _walkDir(dir) {
+		for (const file of await readdir(dir, { withFileTypes: true }))
+			file.isDirectory() ? yield* await walkDir(join(dir, file.name)) : yield join(dir, file.name);
+	})(dir))
+		res.push(fname);
+	return res;
+};
 
 /**
  * @param {ZipConfigOptions} options
@@ -39,28 +52,31 @@ export default function zip(options) {
 		 * @param {OutputOptions} options
 		 * @param {Object.<string, {source: string | Uint8Array}>} bundle
 		 */
-		writeBundle: async function (_options, bundle) {
-			const dir = options?.dir ?? _options?.dir ?? process.cwd();
-			const { fileName } = options;
+		writeBundle: {
+			sequential: true,
+			order: 'post',
+			handler: async function (_options) {
+				const [outputDir, inputDir, targetFiles, { fileName }] = [
+					options?.dir ?? _options?.dir ?? process.cwd(),
+					_options?.dir ?? process.cwd(),
+					await walkDir(_options?.dir),
+					options,
+				];
+				const data = await promisify(zipCb)(
+					await targetFiles.reduce(
+						async (acc, file) => ({
+							...(await acc),
+							[relative(inputDir, file)]: await readFile(file),
+						}),
+						{}
+					)
+				);
 
-			const data = await promisify(zipCb)(
-				await Object.entries(bundle).reduce(
-					async (acc, [name, { type, source }]) => ({
-						...(await acc),
-						[name]:
-							type === 'asset'
-								? typeof source === 'string'
-									? strToU8(source)
-									: source
-								: await readFile(`${_options?.dir}/${name}`),
-					}),
-					{}
-				)
-			);
-			//create dir if it does not exist
-			await mkdir(`./${relative(process.cwd(), dir)}`, { recursive: true });
-			await writeFile(`./${relative(process.cwd(), dir)}/${fileName}`, data);
-			console.log(green(`zipped to ${bold(`${dir}/${fileName}`)} (${filesize(data.byteLength)})`));
+				//create dir if it does not exist
+				await mkdir(`.${sep}${relative(process.cwd(), outputDir)}`, { recursive: true });
+				await writeFile(`.${sep}${relative(process.cwd(), outputDir)}${sep}${fileName}`, data);
+				console.log(green(`zipped to ${bold(`${outputDir}${sep}${fileName}`)} (${filesize(data.byteLength)})`));
+			},
 		},
 	};
 }
