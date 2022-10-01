@@ -8,7 +8,7 @@ specifiers:
   colorette: 2.0.19
   compare-versions: 5.0.1
   daisyui: 2.31.0
-  dotenv: 16.0.2
+  dotenv: 16.0.3
   fflate: 0.7.3
   filesize: 9.0.11
   firebase: 9.10.0
@@ -36,7 +36,7 @@ devDependencies:
   autoprefixer: 10.4.12_postcss@8.4.17
   colorette: 2.0.19
   daisyui: 2.31.0_5zjlt5w4ir2cay3te66iu3k3ji
-  dotenv: 16.0.2
+  dotenv: 16.0.3
   fflate: 0.7.3
   filesize: 9.0.11
   postcss: 8.4.17
@@ -1356,8 +1356,8 @@ packages:
       domhandler: 5.0.3
     dev: true
 
-  /dotenv/16.0.2:
-    resolution: {integrity: sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==}
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
     dev: true
 
