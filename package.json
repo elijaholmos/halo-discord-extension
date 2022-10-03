@@ -20,7 +20,7 @@
 		"colorette": "2.0.19",
 		"daisyui": "2.31.0",
 		"dotenv": "16.0.3",
-		"fflate": "0.7.3",
+		"fflate": "0.7.4",
 		"filesize": "9.0.11",
 		"postcss": "8.4.17",
 		"rollup": "2.79.0",
