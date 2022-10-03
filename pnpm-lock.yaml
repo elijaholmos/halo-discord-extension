@@ -9,7 +9,7 @@ specifiers:
   compare-versions: 5.0.1
   daisyui: 2.31.0
   dotenv: 16.0.3
-  fflate: 0.7.3
+  fflate: 0.7.4
   filesize: 9.0.11
   firebase: 9.10.0
   postcss: 8.4.17
@@ -37,7 +37,7 @@ devDependencies:
   colorette: 2.0.19
   daisyui: 2.31.0_5zjlt5w4ir2cay3te66iu3k3ji
   dotenv: 16.0.3
-  fflate: 0.7.3
+  fflate: 0.7.4
   filesize: 9.0.11
   postcss: 8.4.17
   rollup: 2.79.0
@@ -1661,8 +1661,8 @@ packages:
       websocket-driver: 0.7.4
     dev: false
 
-  /fflate/0.7.3:
-    resolution: {integrity: sha512-0Zz1jOzJWERhyhsimS54VTqOteCNwRtIlh8isdL0AXLo0g7xNTfTL7oWrkmCnPhZGocKIkWHBistBrrpoNH3aw==}
+  /fflate/0.7.4:
+    resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
     dev: true
 
   /filesize/9.0.11:
