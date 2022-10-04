@@ -107,6 +107,9 @@ export const updateUserSettings = async function (settings) {
 	console.log('updateUserSettings');
 	const { uid } = auth.currentUser || {};
 	if (!uid) throw new Error('Cannot update user settings; user is not signed in');
+	if (!settings || !Object.keys(settings).length)
+		throw new Error('Cannot update user settings; no settings provided');
+	if (Array.isArray(settings)) settings = { ...settings };
 	await update(ref(db, `user_settings/${uid}`), settings);
 };
 
