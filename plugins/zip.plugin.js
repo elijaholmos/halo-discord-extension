@@ -16,7 +16,7 @@
 
 import { bold, green } from 'colorette';
 import { zip as zipCb } from 'fflate';
-import filesize from 'filesize';
+import { filesize } from 'filesize';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { promisify } from 'node:util';
