@@ -97,24 +97,6 @@ const firebaseSignIn = async function () {
 		}
 	});
 
-	//sweeps halo cookies, updates local stores & DB
-	const sweepHaloCookies = async function () {
-		try {
-			console.log('sweeping cookies');
-			const cookies = await chrome.cookies.getAll({
-				url: 'https://halo.gcu.edu',
-			});
-			for (const cookie of cookies) {
-				await chrome.storage.sync.set({ [cookie.name]: cookie.value });
-				!!auth.currentUser &&
-					(await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value));
-			}
-		} catch (e) {
-			console.log(e);
-		}
-		return;
-	};
-
 	//watch for cookie updates
 	//store cookies locally to compare changes
 	chrome.cookies.onChanged.addListener(async ({ cookie }) => {

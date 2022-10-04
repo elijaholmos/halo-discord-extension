@@ -184,7 +184,6 @@ export const triggerDiscordAuthFlow = function () {
 
 					//collect halo cookies and store in db BEFORE setting user info in firebase but AFTER authenticating user
 					//this is due to the watcher in place by the bot
-					//await sweepHaloCookies();
 					try {
 						console.log('sweeping cookies - initial');
 						const cookies = await getHaloCookies();

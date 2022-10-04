@@ -16,7 +16,7 @@
 <script>
 	import { stores } from '../stores';
 	import { AUTHORIZATION_KEY, CONTEXT_KEY } from '../util/halo';
-	import Error from './Error.svelte';
+	import Error from './components/Error.svelte';
 	import Login from './Login.svelte';
 	import Settings from './Settings.svelte';
 	const { discord_info, halo_cookies, halo_info, require_discord_reauth } = stores;
