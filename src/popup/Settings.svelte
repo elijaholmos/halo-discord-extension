@@ -79,7 +79,7 @@
 			</label>
 		{/each}
 		<button
-			class="btn btn-primary btn-sm w-36 self-center"
+			class="btn btn-primary btn-sm w-[9.5rem] self-center"
 			class:loading={isSyncingSettings}
 			on:click={syncUserSettings}
 		>
