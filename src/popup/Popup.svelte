@@ -71,7 +71,7 @@
 				</a>
 			</p>
 			<div class="flex gap-2">
-				<a href="https://discord.gg/mY563YHScv" target="_blank">
+				<a href="https://discord.gg/mY563YHScv" target="_blank" title="Discord support server">
 					<svg
 						width="71"
 						height="55"
@@ -91,7 +91,10 @@
 						</defs>
 					</svg>
 				</a>
-				<a href="https://github.com/elijaholmos/halo-discord-extension" target="_blank"
+				<a
+					href="https://github.com/elijaholmos/halo-discord-extension"
+					target="_blank"
+					title="GitHub repository"
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="20"

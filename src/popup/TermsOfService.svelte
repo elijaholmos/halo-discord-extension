@@ -16,6 +16,10 @@
 <script>
 	import { stores } from '../stores';
 	const { accepted_tos } = stores;
+
+	const handleAcceptTos = function () {
+		accepted_tos.set(true);
+	};
 </script>
 
 <div class="flex flex-col items-center">
@@ -50,6 +54,6 @@
 	<div class="flex flex-col items-center [&>p]:w-11/12">
 		<p class="text-base">I have read and agree to the Terms of Service.</p>
 		<p class="text-base">I authorize Halo Notification Service to view my education records.</p>
-		<button class="btn btn-outline btn-primary w-24 m-4">Agree</button>
+		<button class="btn btn-outline btn-primary w-24 m-4" on:click={handleAcceptTos}>Agree</button>
 	</div>
 </div>
