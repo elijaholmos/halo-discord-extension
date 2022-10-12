@@ -14,7 +14,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <script>
-	import Error from './Error.svelte';
+	import Error from './components/Error.svelte';
 
 	//state
 	let error;

@@ -13,13 +13,12 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <script>
 	import { stores } from '../stores';
 	import { fetchDiscordUser, getDefaultSettings, getUserSettings, updateUserSettings } from '../util/auth';
 	import { getUserId, getUserOverview } from '../util/halo';
-	import LazyLoader from './LazyLoader.svelte';
-	import Navbar from './Navbar.svelte';
+	import LazyLoader from './components/LazyLoader.svelte';
+	import Navbar from './components/Navbar.svelte';
 	const { halo_cookies } = stores;
 
 	// ----- state -----
@@ -41,7 +40,7 @@
 	const lazyLoad = async function () {
 		user = await fetchDiscordUser();
 		console.log('fetchDiscordUser', user);
-		if(!user) throw new Error('Unable to fetch Discord information, please close & reopen the popup');
+		if (!user) throw new Error('Unable to fetch Discord information, please close & reopen the popup');
 		//const cookie = await getCookie();
 		const cookie = halo_cookies.get();
 		const uid = await getUserId({ cookie });
@@ -79,7 +78,11 @@
 				<input type="checkbox" class="toggle toggle-primary" bind:checked={user_settings[id]} />
 			</label>
 		{/each}
-		<button class="btn btn-primary btn-sm" class:loading={isSyncingSettings} on:click={syncUserSettings}>
+		<button
+			class="btn btn-primary btn-sm w-[9.5rem] self-center"
+			class:loading={isSyncingSettings}
+			on:click={syncUserSettings}
+		>
 			Save Settings
 		</button>
 	</div>

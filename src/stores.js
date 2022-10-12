@@ -54,13 +54,21 @@ class ApplicationStoreManager {
 	}
 
 	async reconstruct() {
-		console.log('in reconstruct, stores', this.stores);
-		const res = await chrome.runtime.sendMessage('store_reconstruct');
-		console.log('received response', res);
-		//reconstruct stores from JSON
-		await this.#init(JSON.parse(res).map(([key, initial_value]) => chromeStorageSyncStore({ key, initial_value })));
-		console.log('reconstruction complete', this.stores);
-
+		try {
+			console.log('in reconstruct, stores', this.stores);
+			const res = await chrome.runtime.sendMessage('store_reconstruct');
+			console.log('received response', res);
+			//reconstruct stores from JSON
+			await this.#init(
+				JSON.parse(res).map(([key, initial_value]) => chromeStorageSyncStore({ key, initial_value }))
+			);
+			console.log('reconstruction complete', this.stores);
+		} catch (e) {
+			console.log('reconstruct error', e);
+			//wait 1 second and try again
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return this.reconstruct();
+		}
 		return this;
 	}
 

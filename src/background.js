@@ -17,7 +17,7 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { compare } from 'compare-versions';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { child, ref, set } from 'firebase/database';
+import { ref, set } from 'firebase/database';
 import { init, stores } from './stores';
 import { triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
@@ -60,6 +60,7 @@ const firebaseSignIn = async function () {
 		chromeStorageSyncStore({ key: COOKIE_KEY, initial_value: initial_cookies }),
 		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
 		chromeStorageSyncStore({ key: 'require_discord_reauth' }),
+		chromeStorageSyncStore({ key: 'accepted_tos' }),
 	]);
 	console.log('ApplicationStoreManager initialized');
 	console.log(stores);
@@ -96,24 +97,6 @@ const firebaseSignIn = async function () {
 				break;
 		}
 	});
-
-	//sweeps halo cookies, updates local stores & DB
-	const sweepHaloCookies = async function () {
-		try {
-			console.log('sweeping cookies');
-			const cookies = await chrome.cookies.getAll({
-				url: 'https://halo.gcu.edu',
-			});
-			for (const cookie of cookies) {
-				await chrome.storage.sync.set({ [cookie.name]: cookie.value });
-				!!auth.currentUser &&
-					(await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value));
-			}
-		} catch (e) {
-			console.log(e);
-		}
-		return;
-	};
 
 	//watch for cookie updates
 	//store cookies locally to compare changes

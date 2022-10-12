@@ -107,6 +107,9 @@ export const updateUserSettings = async function (settings) {
 	console.log('updateUserSettings');
 	const { uid } = auth.currentUser || {};
 	if (!uid) throw new Error('Cannot update user settings; user is not signed in');
+	if (!settings || !Object.keys(settings).length)
+		throw new Error('Cannot update user settings; no settings provided');
+	if (Array.isArray(settings)) settings = { ...settings };
 	await update(ref(db, `user_settings/${uid}`), settings);
 };
 
@@ -157,10 +160,6 @@ export const triggerDiscordAuthFlow = function () {
 							return resolve();
 						} else throw new Error('You cannot login with a different Discord account');
 
-					//store tokens locally
-					stores.discord_tokens.set(tokens);
-					stores.discord_info.update({ access_token });
-
 					//set uninstall URL for internal purposes
 					chrome.runtime.setUninstallURL(
 						`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
@@ -176,15 +175,14 @@ export const triggerDiscordAuthFlow = function () {
 						`${discord_uid}@halodiscord.app`,
 						access_token
 					);
-					//console.log(user);
+					console.log('created and signed in', user);
 
-					//store discord id locally (triggers background.js which requires user to be created in DB)
-					//await chrome.storage.sync.set({ discord_uid: discord_user.id });
-					stores.discord_info.update({ discord_uid });
+					//store tokens locally - this triggers settings popup (which requires user to be signed in to firebase)
+					stores.discord_tokens.set(tokens);
+					stores.discord_info.update({ access_token, discord_uid });
 
 					//collect halo cookies and store in db BEFORE setting user info in firebase but AFTER authenticating user
 					//this is due to the watcher in place by the bot
-					//await sweepHaloCookies();
 					try {
 						console.log('sweeping cookies - initial');
 						const cookies = await getHaloCookies();
