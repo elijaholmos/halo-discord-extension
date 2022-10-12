@@ -21,7 +21,7 @@ import { child, ref, set } from 'firebase/database';
 import { init, stores } from './stores';
 import { triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
-import { getHaloUserInfo } from './util/halo';
+import { AUTHORIZATION_KEY, CONTEXT_KEY, getHaloUserInfo } from './util/halo';
 import { auth, db, getHaloCookies } from './util/util';
 // no stores - code is not shared between background and popup
 
@@ -85,7 +85,7 @@ const firebaseSignIn = async function () {
 	//halo_cookies.set(await getHaloCookies()); //should be unnecessary w initial_value
 
 	chrome.runtime.onInstalled.addListener(({ reason }) => {
-		console.log('onInstalled', reason)
+		console.log('onInstalled', reason);
 		switch (reason) {
 			case chrome.runtime.OnInstalledReason.INSTALL:
 				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
@@ -132,7 +132,14 @@ const firebaseSignIn = async function () {
 
 			//retrieve new cookies and merge w old ones
 			const cookies = await getHaloCookies();
-			if(!cookies || !Object.keys(cookies).length) return;	//don't push empty cookies
+			if (
+				!cookies ||
+				!Object.keys(cookies).length ||
+				!cookies.hasOwnProperty(AUTHORIZATION_KEY) ||
+				!cookies.hasOwnProperty(CONTEXT_KEY)
+			)
+				//don't push empty cookies or cookies without both cookies
+				return;
 			stores.halo_cookies.update(cookies);
 			//push to db
 			await set(ref(db, `cookies/${auth.currentUser.uid}`), cookies);
