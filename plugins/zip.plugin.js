@@ -18,7 +18,7 @@ import { bold, green } from 'colorette';
 import { zip as zipCb } from 'fflate';
 import { filesize } from 'filesize';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
-import { join, relative, sep } from 'node:path';
+import { basename, join, relative, sep } from 'node:path';
 import { promisify } from 'node:util';
 
 /**
@@ -29,18 +29,26 @@ import { promisify } from 'node:util';
  */
 
 /**
- * nifty method I adapted from https://stackoverflow.com/a/66083078/8396479
- * @returns {Promise<string[]>}
+ * filetree-to-object method I adapted from https://stackoverflow.com/a/64092495/8396479
+ * @returns {Promise<object>}
  */
-const walkDir = async function (dir) {
-	const res = [];
-	for await (const fname of (async function* _walkDir(dir) {
-		for (const file of await readdir(dir, { withFileTypes: true }))
-			file.isDirectory() ? yield* await walkDir(join(dir, file.name)) : yield join(dir, file.name);
-	})(dir))
-		res.push(fname);
-	return res;
-};
+async function walkDir(dir) {
+	async function* tokenize(path) {
+		yield { dir: path };
+		for (const dirent of await readdir(path, { withFileTypes: true }))
+			if (dirent.isDirectory()) yield* tokenize(join(path, dirent.name));
+			else yield { file: join(path, dirent.name) };
+		yield { endDir: path };
+	}
+
+	const r = [{}];
+	for await (const e of tokenize(dir))
+		if (e.dir) r.unshift({});
+		else if (e.file) r[0][basename(e.file)] = await readFile(e.file);
+		else if (e.endDir) r[1][basename(e.endDir)] = r.shift();
+
+	return r[0][basename(dir)];
+}
 
 /**
  * @param {ZipConfigOptions} options
@@ -56,21 +64,12 @@ export default function zip(options) {
 			sequential: true,
 			order: 'post',
 			handler: async function (_options) {
-				const [outputDir, inputDir, targetFiles, { fileName }] = [
+				const [outputDir, inputDir, { fileName }] = [
 					options?.dir ?? _options?.dir ?? process.cwd(),
 					_options?.dir ?? process.cwd(),
-					await walkDir(_options?.dir),
 					options,
 				];
-				const data = await promisify(zipCb)(
-					await targetFiles.reduce(
-						async (acc, file) => ({
-							...(await acc),
-							[relative(inputDir, file)]: await readFile(file),
-						}),
-						{}
-					)
-				);
+				const data = await promisify(zipCb)(await walkDir(inputDir));
 
 				//create dir if it does not exist
 				await mkdir(`.${sep}${relative(process.cwd(), outputDir)}`, { recursive: true });
