@@ -44,6 +44,7 @@
 						class="link link-hover text-info"
 						href="https://elijaho.notion.site/Terms-of-Service-e341190b0998499ea7f31cee2d49f786"
 						target="_blank"
+						rel="norefferer"
 						>Terms of Service
 					</a> in order to use this application</span
 				>

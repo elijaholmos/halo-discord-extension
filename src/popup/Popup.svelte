@@ -36,8 +36,9 @@
 	{#if halo_logged_in}
 		<Error>
 			<p>
-				You need to log into <a href="https://halo.gcu.edu" class="link" target="_blank">halo.gcu.edu</a> for the
-				extension to work
+				You need to log into <a href="https://halo.gcu.edu" class="link" target="_blank" rel="norefferer"
+					>halo.gcu.edu</a
+				> for the extension to work
 			</p>
 		</Error>
 	{:else if !roles.some(({ baseRole, isActive }) => baseRole === 'Student' && isActive)}
@@ -60,18 +61,20 @@
 				<a
 					class="link link-hover text-primary"
 					href="https://elijaho.notion.site/Privacy-Policy-d3c58e616cfa474b8dbcfc587892af46"
-					target="_blank">Privacy Policy</a
+					target="_blank"
+					rel="norefferer">Privacy Policy</a
 				>
 				|
 				<a
 					class="link link-hover text-primary"
 					href="https://elijaho.notion.site/Terms-of-Service-e341190b0998499ea7f31cee2d49f786"
 					target="_blank"
+					rel="norefferer"
 					>Terms of Use
 				</a>
 			</p>
 			<div class="flex gap-2">
-				<a href="https://discord.gg/mY563YHScv" target="_blank" title="Discord support server">
+				<a href="https://discord.gg/mY563YHScv" target="_blank" rel="norefferer" title="Discord support server">
 					<svg
 						width="71"
 						height="55"
@@ -94,6 +97,7 @@
 				<a
 					href="https://github.com/elijaholmos/halo-discord-extension"
 					target="_blank"
+					rel="norefferer"
 					title="GitHub repository"
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
