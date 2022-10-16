@@ -38,7 +38,7 @@
 			</slot>
 		</div>
 	</div>
-	<a href="https://discord.gg/mY563YHScv" target="_blank" rel="norefferer">
+	<a href="https://discord.gg/mY563YHScv" target="_blank" rel="noreferrer">
 		<button class="btn gap-2 bg-discord hover:bg-discord-hover m-2 p-2 text-white">
 			<img
 				class="h-6 w-6"
