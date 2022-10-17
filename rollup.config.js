@@ -16,6 +16,7 @@
 
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import { config as dotenv_config } from 'dotenv';
 import { defineConfig } from 'rollup';
 import { chromeExtension, simpleReloader } from 'rollup-plugin-chrome-extension';
 import copy from 'rollup-plugin-copy';
@@ -25,7 +26,6 @@ import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import zip from './plugins/zip.plugin';
-import { config as dotenv_config } from 'dotenv';
 dotenv_config();
 
 const production = !process.env.ROLLUP_WATCH;
@@ -83,7 +83,7 @@ const firefox = defineConfig({
 	output: {
 		dir: 'build/firefox',
 		format: 'esm',
-		sourcemap: true,
+		sourcemap: !production,
 	},
 	plugins: [
 		emptyDir(),
@@ -115,7 +115,7 @@ const firefox = defineConfig({
 				dev: !production,
 			},
 			preprocess: sveltePreprocess({
-				sourceMap: true,
+				sourceMap: !production,
 			}),
 		}),
 		postcss(),
