@@ -18,7 +18,11 @@ import { reconstruct } from '../stores';
 import Popup from './Popup.svelte';
 import './style.css';
 
-// NEEDS to be called for stores to be shared between background & popup
-await reconstruct();
+try {
+	// NEEDS to be called for stores to be shared between background & popup
+	await reconstruct();
+} catch (e) {
+	console.error('fatal error reconstructing stores', e);
+}
 
 export default new Popup({ target: document.body });
