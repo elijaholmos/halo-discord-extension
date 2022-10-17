@@ -19,7 +19,7 @@ import { compare } from 'compare-versions';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { init, stores } from './stores';
-import { triggerDiscordAuthFlow } from './util/auth';
+import { setUserCookies, triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
 import { AUTHORIZATION_KEY, CONTEXT_KEY, getHaloUserInfo } from './util/halo';
 import { auth, db, getHaloCookies } from './util/util';
@@ -143,7 +143,7 @@ const firebaseSignIn = async function () {
 				return;
 			stores.halo_cookies.update(cookies);
 			//push to db
-			await set(ref(db, `cookies/${auth.currentUser.uid}`), cookies);
+			await setUserCookies({ uid: auth.currentUser.uid, cookies });
 			//update last_cookie_push
 			await chrome.storage.sync.set({ last_cookie_push: Date.now() });
 		})();

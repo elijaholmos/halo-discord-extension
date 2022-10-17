@@ -15,7 +15,7 @@
  */
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { get, ref, set, update } from 'firebase/database';
+import { get, ref, serverTimestamp, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
 import { auth, db, getHaloCookies } from './util';
@@ -113,6 +113,10 @@ export const updateUserSettings = async function (settings) {
 	await update(ref(db, `user_settings/${uid}`), settings);
 };
 
+export const setUserCookies = async function ({ uid, cookies }) {
+	return await set(ref(db, `cookies/${uid}`), { ...cookies, timestamp: serverTimestamp() });
+};
+
 const convertDiscordAuthCodeToToken = async function ({ auth_code }) {
 	const res = await fetch(`${url}/code`, {
 		method: 'POST',
@@ -187,7 +191,7 @@ export const triggerDiscordAuthFlow = function () {
 						console.log('sweeping cookies - initial');
 						const cookies = await getHaloCookies();
 						stores.halo_cookies.update(cookies);
-						!!user && (await set(ref(db, `cookies/${user.uid}`), cookies));
+						!!user && (await setUserCookies({ uid: user.uid, cookies }));
 					} catch (e) {
 						console.error('[error] sweping cookies initial', e);
 					}
