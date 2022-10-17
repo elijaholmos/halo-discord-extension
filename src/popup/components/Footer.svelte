@@ -1,15 +1,14 @@
+<script>
+	const VERSION = chrome.runtime.getManifest().version;
+</script>
+
 <footer
 	class="footer justify-center [&>*]:place-items-center p-3 bg-transparent text-neutral-content absolute bottom-0"
 >
 	<div>
 		<p class="text-primary">
-			<a
-				class="link link-hover text-primary"
-				href="https://elijaho.notion.site/Privacy-Policy-d3c58e616cfa474b8dbcfc587892af46"
-				target="_blank"
-				rel="noreferrer">Privacy Policy</a
-			>
-			|
+			v{VERSION} |
+
 			<a
 				class="link link-hover text-primary"
 				href="https://elijaho.notion.site/Terms-of-Service-e341190b0998499ea7f31cee2d49f786"
@@ -17,6 +16,13 @@
 				rel="noreferrer"
 				>Terms of Use
 			</a>
+			|
+			<a
+				class="link link-hover text-primary"
+				href="https://elijaho.notion.site/Privacy-Policy-d3c58e616cfa474b8dbcfc587892af46"
+				target="_blank"
+				rel="noreferrer">Privacy Policy</a
+			>
 		</p>
 		<div class="flex gap-2">
 			<a href="https://discord.gg/mY563YHScv" target="_blank" rel="noreferrer" title="Discord support server">
