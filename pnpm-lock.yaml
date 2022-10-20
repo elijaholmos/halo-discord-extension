@@ -21,6 +21,7 @@ specifiers:
   rollup-plugin-postcss: 4.0.2
   rollup-plugin-svelte: 7.1.0
   rollup-plugin-terser: 7.0.2
+  rollup-plugin-zipdir: 1.0.1
   svelte: 3.52.0
   svelte-preprocess: 4.10.7
   tailwindcss: 3.2.0
@@ -48,9 +49,10 @@ devDependencies:
   rollup-plugin-postcss: 4.0.2_postcss@8.4.18
   rollup-plugin-svelte: 7.1.0_aj2crlfd2wudglw2g7rnnkkqu4
   rollup-plugin-terser: 7.0.2_rollup@2.79.1
+  rollup-plugin-zipdir: 1.0.1
   svelte: 3.52.0
   svelte-preprocess: 4.10.7_vidagnlh55bt6yxji7dk5y5wla
-  tailwindcss: 3.2.0_postcss@8.4.18
+  tailwindcss: 3.2.0
 
 packages:
 
@@ -1260,7 +1262,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.18
       postcss-js: 4.0.0_postcss@8.4.18
-      tailwindcss: 3.2.0_postcss@8.4.18
+      tailwindcss: 3.2.0
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -2966,6 +2968,14 @@ packages:
       terser: 5.15.1
     dev: true
 
+  /rollup-plugin-zipdir/1.0.1:
+    resolution: {integrity: sha512-EpMHipDA2D5NtntnRtd7429onYQ8UKXQQaNQHc0FCkd2QRZy2MMLXsWkoVxa39gM0xWML3PP2pscJNIgYEQWhA==}
+    dependencies:
+      colorette: 2.0.19
+      fflate: 0.7.4
+      filesize: 10.0.5
+    dev: true
+
   /rollup-pluginutils/2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
     dependencies:
@@ -3253,12 +3263,10 @@ packages:
       stable: 0.1.8
     dev: true
 
-  /tailwindcss/3.2.0_postcss@8.4.18:
+  /tailwindcss/3.2.0:
     resolution: {integrity: sha512-ARh/W0uH5UlWIC2nn02V0+5fyF0k6qZliyt4QYic2upOhPUE/Spu1EURNc9txJ3+4j8OEmdigqfDpw4d2tA4vA==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

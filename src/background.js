@@ -113,11 +113,11 @@ const firebaseSignIn = async function () {
 			stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
 		}
 
-		// push cookies to db every 12h
+		// push cookies to db every COOKIE_PUSH_INTERVAL
 		await pushCookiesToDatabase();
 	});
 
-	// push cookies to db every 12h
+	// push cookies to db every COOKIE_PUSH_INTERVAL
 	let currently_pushing_cookies = false;
 	const pushCookiesToDatabase = async function pushCookiesToDatabaseWrapper() {
 		if (currently_pushing_cookies) return;

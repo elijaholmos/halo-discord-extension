@@ -24,8 +24,8 @@ import { emptyDir } from 'rollup-plugin-empty-dir';
 import postcss from 'rollup-plugin-postcss';
 import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
+import zipDir from 'rollup-plugin-zipdir';
 import sveltePreprocess from 'svelte-preprocess';
-import zip from './plugins/zip.plugin';
 dotenv_config();
 
 const production = !process.env.ROLLUP_WATCH;
@@ -60,6 +60,7 @@ const chrome = defineConfig({
 		}),
 		replace({
 			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
+			preventAssignment: false,
 		}),
 		//license({}),
 		copy({
@@ -74,7 +75,7 @@ const chrome = defineConfig({
 			verbose: true,
 		}),
 		production && terser(),
-		production && zip({ fileName: 'chrome.zip', dir: 'dist' }),
+		production && zipDir({ name: 'chrome.zip', outputDir: 'dist' }),
 	],
 });
 
@@ -90,6 +91,7 @@ const firefox = defineConfig({
 		replace({
 			'chrome.': 'browser.',
 			delimiters: ['', ''],
+			preventAssignment: false,
 		}),
 		chromeExtension({
 			extendManifest: (manifest) => {
@@ -125,6 +127,7 @@ const firefox = defineConfig({
 		}),
 		replace({
 			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
+			preventAssignment: false,
 		}),
 		copy({
 			targets: [
@@ -138,7 +141,7 @@ const firefox = defineConfig({
 			verbose: true,
 		}),
 		production && terser(),
-		production && zip({ fileName: 'firefox.zip', dir: 'dist' }),
+		production && zipDir({ name: 'firefox.zip', outputDir: 'dist' }),
 	],
 });
 
