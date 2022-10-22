@@ -39,6 +39,6 @@
 	},
 	"dependencies": {
 		"compare-versions": "5.0.1",
-		"firebase": "9.10.0"
+		"firebase": "9.12.1"
 	}
 }
