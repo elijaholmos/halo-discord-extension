@@ -17,12 +17,11 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { compare } from 'compare-versions';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
 import { init, stores } from './stores';
-import { setUserCookies, triggerDiscordAuthFlow } from './util/auth';
+import { health, setUserCookies, triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
 import { AUTHORIZATION_KEY, CONTEXT_KEY, getHaloUserInfo } from './util/halo';
-import { auth, db, getHaloCookies } from './util/util';
+import { auth, getHaloCookies } from './util/util';
 // no stores - code is not shared between background and popup
 
 const VERSION = chrome.runtime.getManifest().version;
@@ -61,6 +60,7 @@ const firebaseSignIn = async function () {
 		chromeStorageSyncStore({ key: 'halo_info', initial_value: () => getHaloUserInfo({ cookie: initial_cookies }) }),
 		chromeStorageSyncStore({ key: 'require_discord_reauth' }),
 		chromeStorageSyncStore({ key: 'accepted_tos' }),
+		chromeStorageSyncStore({ key: 'health', initial_value: () => health() }),
 	]);
 	console.log('ApplicationStoreManager initialized');
 	console.log(stores);
@@ -92,9 +92,9 @@ const firebaseSignIn = async function () {
 				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
 				chrome.action.openPopup();
 				break;
-			case chrome.runtime.OnInstalledReason.UPDATE:
-				!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
-				break;
+			// case chrome.runtime.OnInstalledReason.UPDATE:
+			// 	!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
+			// 	break;
 		}
 	});
 

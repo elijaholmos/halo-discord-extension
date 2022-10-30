@@ -18,24 +18,48 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 import credentials from './credentials';
+import { encrypt } from './encryption';
+import { AUTHORIZATION_KEY, CONTEXT_KEY } from './halo';
 
 const app = initializeApp(credentials.firebase);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
+/**
+ * @returns {boolean}
+ */
+export const isValidCookieObject = function (obj) {
+	return obj?.hasOwnProperty(AUTHORIZATION_KEY) && obj?.hasOwnProperty(CONTEXT_KEY);
+};
+
 export const getHaloCookies = async function () {
 	try {
-		console.log('getHaloCookies');
-		const cookies = (await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' }))
-			.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {});
-		// for (const cookie of cookies) {
-		// 	await chrome.storage.sync.set({ [cookie.name]: cookie.value });
-		// 	!!auth.currentUser &&
-		// 		(await set(child(ref(db, `cookies/${auth.currentUser.uid}`), cookie.name), cookie.value));
-		// }
-		return cookies;
+		console.log('in getHaloCookies');
+		return (await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' })).reduce(
+			(acc, { name, value }) => ({ ...acc, [name]: value }),
+			{}
+		);
 	} catch (e) {
 		console.log('getHaloCookies error', e);
 		return {};
+	}
+};
+
+export const encryptCookieObject = async function (cookie) {
+	try {
+		const { [AUTHORIZATION_KEY]: auth, [CONTEXT_KEY]: context } = cookie;
+		if (!auth || !context)
+			throw new Error(`[encryptCookie] Unable to destructure cookie object, ${JSON.stringify(cookie)}`);
+
+		const encrypted_auth = await encrypt(auth);
+		const encrypted_context = await encrypt(context);
+
+		if (!encrypted_auth || !encrypted_context)
+			throw new Error(`[encryptCookie] Unable to encrypt cookie object, ${JSON.stringify(cookie)}`);
+
+		return { ...cookie, [AUTHORIZATION_KEY]: encrypted_auth, [CONTEXT_KEY]: encrypted_context };
+	} catch (e) {
+		console.log(e);
+		return null;
 	}
 };

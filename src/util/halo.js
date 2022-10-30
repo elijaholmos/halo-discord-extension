@@ -103,8 +103,3 @@ export const getHaloUserInfo = async function ({ cookie }) {
 	if (res.error) return console.error(res.error);
 	return res.payload;
 };
-
-export const getCookie = async function () {
-	const cookies = await chrome.cookies.getAll({ url: 'https://halo.gcu.edu' });
-	return cookies.reduce((acc, cookie) => ({ ...acc, [cookie.name]: cookie.value }), {});
-};
