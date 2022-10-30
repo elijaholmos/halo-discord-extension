@@ -18,7 +18,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, ref, serverTimestamp, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
-import { auth, db, getHaloCookies } from './util';
+import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
 export const fetchDiscordUser = async function ({ access_token, count = 0 } = stores.discord_tokens.get()) {
@@ -114,7 +114,10 @@ export const updateUserSettings = async function (settings) {
 };
 
 export const setUserCookies = async function ({ uid, cookies }) {
-	return await set(ref(db, `cookies/${uid}`), { ...cookies, timestamp: serverTimestamp() });
+	console.log('in setUserCookies');
+	const encrypted_cookie = await encryptCookieObject(cookies);
+	if (!isValidCookieObject(encrypted_cookie)) throw new Error('Invalid cookie object');
+	return await set(ref(db, `cookies/${uid}`), { ...encrypted_cookie, timestamp: serverTimestamp() });
 };
 
 const convertDiscordAuthCodeToToken = async function ({ auth_code }) {
@@ -211,4 +214,25 @@ export const triggerDiscordAuthFlow = function () {
 			}
 		);
 	});
+};
+
+export const health = async function () {
+	try {
+		const version = chrome.runtime.getManifest().version;
+		//get an access token using the refresh token
+		const res = await fetch(`${url}/health`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ version }),
+		});
+
+		if (res.status !== 200) throw new Error(await res.text());
+
+		const json = await res.json();
+		console.log('Refreshed health response:', json);
+		return json;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
 };

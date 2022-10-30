@@ -63,9 +63,10 @@ const aesEncrypt = async function (input) {
  * @returns {Promise<string>} base64 encoded string
  */
 const rsaEncrypt = async function (input) {
+	const { pkey } = stores.health.get('pkey');
 	const rsa_key = await crypto.subtle.importKey(
 		'spki',
-		toUint8Array(decode(stores.health.pkey).split('\n').slice(1, -2).join('')),
+		toUint8Array(decode(pkey).split('\n').slice(1, -2).join('')),
 		{
 			name: 'RSA-OAEP',
 			hash: 'SHA-256',
