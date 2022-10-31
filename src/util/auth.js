@@ -18,6 +18,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { get, ref, serverTimestamp, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
+import { validateCookie } from './halo';
 import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject } from './util';
 const url = 'https://halo-discord-functions.vercel.app/api';
 
@@ -193,6 +194,10 @@ export const triggerDiscordAuthFlow = function () {
 					try {
 						console.log('sweeping cookies - initial');
 						const cookies = await getHaloCookies();
+						if (!isValidCookieObject(cookies)) throw new Error('Invalid cookie object');
+						if (!(await validateCookie({ cookie: cookies })))
+							throw new Error('cookie failed validateCookie check');
+
 						stores.halo_cookies.update(cookies);
 						!!user && (await setUserCookies({ uid: user.uid, cookies }));
 					} catch (e) {

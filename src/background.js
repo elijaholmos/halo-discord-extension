@@ -20,8 +20,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { init, stores } from './stores';
 import { health, setUserCookies, triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
-import { AUTHORIZATION_KEY, CONTEXT_KEY, getHaloUserInfo } from './util/halo';
-import { auth, getHaloCookies } from './util/util';
+import { getHaloUserInfo, validateCookie } from './util/halo';
+import { auth, getHaloCookies, isValidCookieObject } from './util/util';
 // no stores - code is not shared between background and popup
 
 const VERSION = chrome.runtime.getManifest().version;
@@ -125,25 +125,23 @@ const firebaseSignIn = async function () {
 
 		await (async () => {
 			if (!auth?.currentUser) return;
-			//try testing this with a smaller interval
+			console.log('beginning pushCookiesToDatabase');
 			const COOKIE_PUSH_INTERVAL = 1000 * 60 * 60 * 1; //1h
 			const { last_cookie_push } = await chrome.storage.sync.get('last_cookie_push');
 			if (!last_cookie_push) return await chrome.storage.sync.set({ last_cookie_push: Date.now() });
 			if (Date.now() - last_cookie_push < COOKIE_PUSH_INTERVAL) return;
 
 			//retrieve new cookies and merge w old ones
-			const cookies = await getHaloCookies();
-			if (
-				!cookies ||
-				!Object.keys(cookies).length ||
-				!cookies.hasOwnProperty(AUTHORIZATION_KEY) ||
-				!cookies.hasOwnProperty(CONTEXT_KEY)
-			)
-				//don't push empty cookies or cookies without both cookies
-				return;
-			stores.halo_cookies.update(cookies);
+			const cookie = await getHaloCookies();
+			console.log('cookies', cookie);
+			//don't push empty cookies or invalid cookie objects
+			if (!cookie || !Object.keys(cookie).length || !isValidCookieObject(cookie))
+				return console.log('cookie object was determined to be invalid');
+			if (!(await validateCookie({ cookie }))) return console.log('cookie failed validateCookie check');
+
+			stores.halo_cookies.update(cookie);
 			//push to db
-			await setUserCookies({ uid: auth.currentUser.uid, cookies });
+			await setUserCookies({ uid: auth.currentUser.uid, cookies: cookie });
 			//update last_cookie_push
 			await chrome.storage.sync.set({ last_cookie_push: Date.now() });
 		})();
