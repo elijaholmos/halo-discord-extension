@@ -103,3 +103,17 @@ export const getHaloUserInfo = async function ({ cookie }) {
 	if (res.error) return console.error(res.error);
 	return res.payload;
 };
+
+/**
+ * Ensure cookie object contains required keys and is not expired
+ * @returns {Promise<boolean>}
+ */
+export const validateCookie = async function ({ cookie }) {
+	try {
+		const uid = await getUserId({ cookie });
+		const overview = await getUserOverview({ cookie, uid });
+		return !!uid && !!overview;
+	} catch (error) {
+		return false;
+	}
+};
