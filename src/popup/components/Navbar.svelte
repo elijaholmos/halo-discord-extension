@@ -13,7 +13,6 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <script>
 	export let user;
 
@@ -49,7 +48,7 @@
 				class="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box bg-base-200 w-52"
 				style:visibility={isDropdownOpen ? 'visible' : 'hidden'}
 			>
-				<li><a href>{user.username}#{user.discriminator}</a></li>
+				<li><a>{user.username}#{user.discriminator}</a></li>
 				<!-- <li><a>Logout</a></li> -->
 			</ul>
 		</div>
