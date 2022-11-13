@@ -25,7 +25,7 @@ specifiers:
   rollup-plugin-zipdir: 1.0.1
   svelte: 3.52.0
   svelte-preprocess: 4.10.7
-  tailwindcss: 3.2.3
+  tailwindcss: 3.2.4
 
 dependencies:
   compare-versions: 5.0.1
@@ -54,7 +54,7 @@ devDependencies:
   rollup-plugin-zipdir: 1.0.1
   svelte: 3.52.0
   svelte-preprocess: 4.10.7_ihqewwycgzwzieh4kifndbsfy4
-  tailwindcss: 3.2.3_postcss@8.4.19
+  tailwindcss: 3.2.4_postcss@8.4.19
 
 packages:
 
@@ -1264,7 +1264,7 @@ packages:
       css-selector-tokenizer: 0.8.0
       postcss: 8.4.19
       postcss-js: 4.0.0_postcss@8.4.19
-      tailwindcss: 3.2.3_postcss@8.4.19
+      tailwindcss: 3.2.4_postcss@8.4.19
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -3269,8 +3269,8 @@ packages:
       stable: 0.1.8
     dev: true
 
-  /tailwindcss/3.2.3_postcss@8.4.19:
-    resolution: {integrity: sha512-Xt9D4PK4zuuQCEB8bwK9JUCKmTgUwyac/6b0/42Vqhgl6YJkep+Wf5wq+5uXYfmrupdAD0YY2NY1hyZp1HjRrg==}
+  /tailwindcss/3.2.4_postcss@8.4.19:
+    resolution: {integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:
