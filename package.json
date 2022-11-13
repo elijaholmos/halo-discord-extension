@@ -35,7 +35,7 @@
 		"rollup-plugin-zipdir": "1.0.1",
 		"svelte": "3.52.0",
 		"svelte-preprocess": "4.10.7",
-		"tailwindcss": "3.2.3"
+		"tailwindcss": "3.2.4"
 	},
 	"dependencies": {
 		"compare-versions": "5.0.1",
