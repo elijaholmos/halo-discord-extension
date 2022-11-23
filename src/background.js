@@ -16,9 +16,9 @@
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { compare } from 'compare-versions';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithCustomToken } from 'firebase/auth';
 import { init, stores } from './stores';
-import { health, setUserCookies, triggerDiscordAuthFlow } from './util/auth';
+import { getUserJwt, health, setUserCookies, triggerDiscordAuthFlow } from './util/auth';
 import chromeStorageSyncStore from './util/chromeStorageSyncStore';
 import { getHaloUserInfo, validateCookie } from './util/halo';
 import { auth, getHaloCookies, isValidCookieObject } from './util/util';
@@ -29,10 +29,11 @@ const COOKIE_KEY = 'halo_cookies';
 const firebaseSignIn = async function () {
 	console.log('in firebaseSignIn');
 	try {
-		const { discord_uid, access_token } = stores.discord_info.get();
-		if (!discord_uid) throw new Error('no discord_uid');
-		if (!access_token) throw new Error('no access_token');
-		await signInWithEmailAndPassword(auth, `${discord_uid}@halodiscord.app`, access_token);
+		const { access_token } = stores.discord_tokens.get();
+		if (!access_token) throw new Error('no discord access_token');
+		const jwt = await getUserJwt();
+		if (!jwt) throw new Error('could not retrieve jwt');
+		await signInWithCustomToken(auth, jwt);
 	} catch (e) {
 		console.warn('Firebase signin failed', e);
 	}
@@ -41,19 +42,24 @@ const firebaseSignIn = async function () {
 (async function () {
 	console.log(`${chrome.runtime.getManifest().name} v${VERSION}`);
 
-	// check & clear localstorage
+	// check & clear localstorage (added in v2 update)
 	const { last_cleared_version } = await chrome.storage.sync.get('last_cleared_version');
 	if (!last_cleared_version || compare(last_cleared_version, '2.0.0', '<')) {
 		console.log('clearing local storage');
 		await chrome.storage.sync.clear();
 		chrome.storage.sync.set({ last_cleared_version: VERSION });
 	}
+	//check & signOut from firebase (added in v2.3 for auth provider change)
+	const { last_signedout_version } = await chrome.storage.sync.get('last_signedout_version');
+	if (!last_signedout_version || compare(last_signedout_version, '2.3.0', '<')) {
+		console.log('signing user out');
+		await auth.signOut();
+		chrome.storage.sync.set({ last_signedout_version: VERSION });
+	}
 
 	console.log('initializing ApplicationStoreManager');
 	const initial_cookies = await getHaloCookies();
 	await init([
-		//chromeStorageSyncStore({ key: 'test', initial_value: 'a' }),
-		//chromeStorageSyncStore({ key: 'test2' }),
 		chromeStorageSyncStore({ key: 'discord_tokens' }),
 		chromeStorageSyncStore({ key: 'discord_info' }),
 		chromeStorageSyncStore({ key: COOKIE_KEY, initial_value: initial_cookies }),
@@ -81,7 +87,7 @@ const firebaseSignIn = async function () {
 	});
 
 	if (!auth.currentUser) await firebaseSignIn();
-	console.log(auth?.currentUser?.uid);
+	console.log(auth?.currentUser);
 
 	//halo_cookies.set(await getHaloCookies()); //should be unnecessary w initial_value
 
