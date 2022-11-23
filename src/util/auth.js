@@ -192,7 +192,6 @@ export const triggerDiscordAuthFlow = function () {
 					//set uninstall URL for internal purposes
 					chrome.runtime.setUninstallURL(
 						`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
-							discord_uid,
 							access_token,
 						}).toString()}`
 					);
