@@ -15,7 +15,7 @@
  */
 
 import { getIdToken, signInWithCustomToken } from 'firebase/auth';
-import { get, ref, serverTimestamp, set, update } from 'firebase/database';
+import { get, increment, ref, serverTimestamp, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
 import { validateCookie } from './halo';
@@ -221,16 +221,14 @@ export const triggerDiscordAuthFlow = function () {
 						console.error('[error] sweping cookies initial', e);
 					}
 
-					//TODO: user doc needs to be deleted on uninstall thru bot
-
 					//because Firebase is dumb, we don't get a create() method like Firestore
 					//so we have to check if the user exists first thru a separate query
 					const user_doc_ref = ref(db, `users/${user.uid}`);
-					if (!(await get(user_doc_ref)).exists())
-						//set user info in Firebase (triggers bot)
-						await update(user_doc_ref, {
-							created_on: serverTimestamp(),
-						});
+					//set created_on field in user info in Firebase (triggers bot)
+					await update(user_doc_ref, {
+						...(!(await get(user_doc_ref)).exists() && { created_on: serverTimestamp() }),
+						ext_devices: increment(1),
+					});
 					//store discord tokens in DB
 					await update(ref(db, `discord_tokens/${user.uid}`), tokens);
 
