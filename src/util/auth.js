@@ -163,7 +163,7 @@ export const triggerDiscordAuthFlow = function () {
 			{
 				url: `https://discord.com/api/oauth2/authorize?response_type=code&client_id=${
 					credentials.discord.client_id
-				}&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=identify`,
+				}&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=identify%20guilds`,
 				interactive: true,
 			},
 			async (redirect_url) => {
