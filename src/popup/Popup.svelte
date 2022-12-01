@@ -23,13 +23,13 @@
 	import Login from './Login.svelte';
 	import Settings from './Settings.svelte';
 	import TermsOfService from './TermsOfService.svelte';
-	const { discord_info, halo_cookies, halo_info, require_discord_reauth, accepted_tos } = stores;
+	const { discord_tokens, halo_cookies, halo_info, require_discord_reauth, accepted_tos } = stores;
 
 	console.log('in popup');
-	console.log(discord_info);
+	console.log(discord_tokens);
 
 	// reactive store destructuring https://svelte.dev/repl/a602f67808bb472296459df76af77464?version=3.35.0
-	$: ({ access_token } = $discord_info || {}); //confirmed 2022-08-06 that this dynamically updates
+	$: ({ access_token } = $discord_tokens || {}); //confirmed 2022-08-06 that this dynamically updates
 	$: ({ roles } = $halo_info || {});
 
 	let halo_logged_in;
