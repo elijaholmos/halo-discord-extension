@@ -42,6 +42,22 @@ const firebaseSignIn = async function () {
 (async function () {
 	console.log(`${chrome.runtime.getManifest().name} v${VERSION}`);
 
+	chrome.runtime.onInstalled.addListener(({ reason }) => {
+		console.log('onInstalled', reason);
+		switch (reason) {
+			case chrome.runtime.OnInstalledReason.INSTALL:
+				// FIREFOX RESTRICTION: browser.storage is apparently not cleared during uninstall
+				// always remove tokens on install to require user to reauth
+				chrome.storage.sync.remove('discord_tokens');
+				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
+				chrome.action.openPopup();
+				break;
+			// case chrome.runtime.OnInstalledReason.UPDATE:
+			// 	!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
+			// 	break;
+		}
+	});
+
 	// check & clear localstorage (added in v2 update)
 	const { last_cleared_version } = await chrome.storage.sync.get('last_cleared_version');
 	if (!last_cleared_version || compare(last_cleared_version, '2.0.0', '<')) {
@@ -90,19 +106,6 @@ const firebaseSignIn = async function () {
 	console.log(auth?.currentUser);
 
 	//halo_cookies.set(await getHaloCookies()); //should be unnecessary w initial_value
-
-	chrome.runtime.onInstalled.addListener(({ reason }) => {
-		console.log('onInstalled', reason);
-		switch (reason) {
-			case chrome.runtime.OnInstalledReason.INSTALL:
-				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
-				chrome.action.openPopup();
-				break;
-			// case chrome.runtime.OnInstalledReason.UPDATE:
-			// 	!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
-			// 	break;
-		}
-	});
 
 	//watch for cookie updates
 	//store cookies locally to compare changes
