@@ -19,7 +19,7 @@ import { get, increment, ref, serverTimestamp, set, update } from 'firebase/data
 import { stores } from '../stores';
 import credentials from './credentials';
 import { validateCookie } from './halo';
-import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject } from './util';
+import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject, setUninstallURL } from './util';
 const url = __API_URL__;
 
 export const fetchDiscordUser = async function ({ access_token, count = 0 } = stores.discord_tokens.get()) {
@@ -71,6 +71,9 @@ export const refreshDiscordToken = async function ({ refresh_token } = stores.di
 		stores.discord_tokens.set(tokens);
 		//store tokens in DB
 		update(ref(db, `discord_tokens/${auth.currentUser.uid}`), tokens);
+
+		//update uninstall URL
+		setUninstallURL(access_token);
 
 		//lastly, return the access token
 		return access_token;
@@ -189,12 +192,8 @@ export const triggerDiscordAuthFlow = function () {
 							return resolve();
 						} else throw new Error('You cannot login with a different Discord account');
 
-					//set uninstall URL for internal purposes
-					chrome.runtime.setUninstallURL(
-						`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
-							access_token,
-						}).toString()}`
-					);
+					//set uninstall URL to update their account after uninstalling
+					setUninstallURL(access_token);
 
 					//retrieve token from api (BEFORE storing local discord info)
 					const jwt = await getUserJwt({ access_token });
