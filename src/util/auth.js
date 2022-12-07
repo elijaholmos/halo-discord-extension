@@ -84,10 +84,10 @@ export const getDefaultSettings = async function () {
 	try {
 		console.log('getDefaultSettings');
 		const settings = await get(ref(db, 'default_settings'));
-		return settings.exists() ? settings.val() : {};
+		return settings.exists() ? Object.values(settings.val()) : [];
 	} catch (e) {
 		console.error('getUserSettings error', e);
-		return {};
+		return [];
 	}
 };
 

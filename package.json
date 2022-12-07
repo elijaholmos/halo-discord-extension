@@ -1,6 +1,6 @@
 {
 	"name": "halo-discord-extension",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"description": "Receive Discord notifications for updates in Halo",
 	"author": "Elijah Olmos",
 	"license": "AGPL-3.0-only",
