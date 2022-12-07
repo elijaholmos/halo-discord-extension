@@ -51,7 +51,7 @@
 		// settings
 		default_settings = await getDefaultSettings();
 		//apply default settings to user_settings
-		user_settings = Object.values(default_settings).reduce(
+		user_settings = default_settings.reduce(
 			(acc, { id, value }) => (!!acc.hasOwnProperty(id) ? acc : { ...acc, [id]: value }),
 			await getUserSettings()
 		);
