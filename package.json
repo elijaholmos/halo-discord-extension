@@ -22,7 +22,7 @@
 		"daisyui": "2.42.1",
 		"dotenv": "16.0.3",
 		"fflate": "0.7.4",
-		"filesize": "10.0.5",
+		"filesize": "10.0.6",
 		"postcss": "8.4.19",
 		"rollup": "2.79.1",
 		"rollup-plugin-chrome-extension": "3.6.10",
