@@ -19,7 +19,7 @@
 		"@types/chrome": "0.0.204",
 		"autoprefixer": "10.4.13",
 		"colorette": "2.0.19",
-		"daisyui": "2.42.1",
+		"daisyui": "2.45.0",
 		"dotenv": "16.0.3",
 		"fflate": "0.7.4",
 		"filesize": "10.0.6",
