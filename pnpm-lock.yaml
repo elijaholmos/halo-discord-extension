@@ -6,7 +6,7 @@ specifiers:
   '@types/chrome': 0.0.206
   autoprefixer: 10.4.13
   colorette: 2.0.19
-  compare-versions: 5.0.1
+  compare-versions: 5.0.3
   daisyui: 2.46.0
   dotenv: 16.0.3
   fflate: 0.7.4
@@ -28,7 +28,7 @@ specifiers:
   tailwindcss: 3.2.4
 
 dependencies:
-  compare-versions: 5.0.1
+  compare-versions: 5.0.3
   firebase: 9.15.0
   js-base64: 3.7.3
 
@@ -1096,8 +1096,8 @@ packages:
     resolution: {integrity: sha512-YeNK4tavZwtH7jEgK1ZINXzLKm6DZdEMfsaaieOsCAN0S8vsY7UeuO3Q7d/M018EFgE+IeUAuBOKkFccBZsUZA==}
     dev: true
 
-  /compare-versions/5.0.1:
-    resolution: {integrity: sha512-v8Au3l0b+Nwkp4G142JcgJFh1/TUhdxut7wzD1Nq1dyp5oa3tXaqb03EXOAB6jS4gMlalkjAUPZBMiAfKUixHQ==}
+  /compare-versions/5.0.3:
+    resolution: {integrity: sha512-4UZlZP8Z99MGEY+Ovg/uJxJuvoXuN4M6B3hKaiackiHrgzQFEe3diJi1mf1PNHbFujM7FvLrK2bpgIaImbtZ1A==}
     dev: false
 
   /concat-map/0.0.1:

@@ -38,7 +38,7 @@
 		"tailwindcss": "3.2.4"
 	},
 	"dependencies": {
-		"compare-versions": "5.0.1",
+		"compare-versions": "5.0.3",
 		"firebase": "9.15.0",
 		"js-base64": "3.7.3"
 	}
