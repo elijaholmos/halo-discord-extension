@@ -14,7 +14,7 @@ specifiers:
   firebase: 9.15.0
   js-base64: 3.7.3
   postcss: 8.4.20
-  rollup: 2.79.1
+  rollup: 3.9.0
   rollup-plugin-chrome-extension: 3.6.10
   rollup-plugin-copy: 3.4.0
   rollup-plugin-empty-dir: 1.0.5
@@ -33,8 +33,8 @@ dependencies:
   js-base64: 3.7.3
 
 devDependencies:
-  '@rollup/plugin-node-resolve': 15.0.1_rollup@2.79.1
-  '@rollup/plugin-replace': 4.0.0_rollup@2.79.1
+  '@rollup/plugin-node-resolve': 15.0.1_rollup@3.9.0
+  '@rollup/plugin-replace': 4.0.0_rollup@3.9.0
   '@types/chrome': 0.0.206
   autoprefixer: 10.4.13_postcss@8.4.20
   colorette: 2.0.19
@@ -43,14 +43,14 @@ devDependencies:
   fflate: 0.7.4
   filesize: 10.0.6
   postcss: 8.4.20
-  rollup: 2.79.1
+  rollup: 3.9.0
   rollup-plugin-chrome-extension: 3.6.10
   rollup-plugin-copy: 3.4.0
-  rollup-plugin-empty-dir: 1.0.5_rollup@2.79.1
-  rollup-plugin-license: 2.8.1_rollup@2.79.1
+  rollup-plugin-empty-dir: 1.0.5_rollup@3.9.0
+  rollup-plugin-license: 2.8.1_rollup@3.9.0
   rollup-plugin-postcss: 4.0.2_postcss@8.4.20
-  rollup-plugin-svelte: 7.1.0_i7ezk4bjuqxhd3642jb7pe7zwu
-  rollup-plugin-terser: 7.0.2_rollup@2.79.1
+  rollup-plugin-svelte: 7.1.0_rollup@3.9.0+svelte@3.55.0
+  rollup-plugin-terser: 7.0.2_rollup@3.9.0
   rollup-plugin-zipdir: 1.0.1
   svelte: 3.55.0
   svelte-preprocess: 5.0.0_qs7rgzvahok4cbkjoy5bgypde4
@@ -682,7 +682,7 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
-  /@rollup/plugin-node-resolve/15.0.1_rollup@2.79.1:
+  /@rollup/plugin-node-resolve/15.0.1_rollup@3.9.0:
     resolution: {integrity: sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -691,26 +691,26 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@2.79.1
+      '@rollup/pluginutils': 5.0.2_rollup@3.9.0
       '@types/resolve': 1.20.2
       deepmerge: 4.2.2
       is-builtin-module: 3.2.0
       is-module: 1.0.0
       resolve: 1.22.1
-      rollup: 2.79.1
+      rollup: 3.9.0
     dev: true
 
-  /@rollup/plugin-replace/4.0.0_rollup@2.79.1:
+  /@rollup/plugin-replace/4.0.0_rollup@3.9.0:
     resolution: {integrity: sha512-+rumQFiaNac9y64OHtkHGmdjm7us9bo1PlbgQfdihQtuNxzjpaB064HbRnewUOggLQxVCCyINfStkgmBeQpv1g==}
     peerDependencies:
       rollup: ^1.20.0 || ^2.0.0
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.79.1
+      '@rollup/pluginutils': 3.1.0_rollup@3.9.0
       magic-string: 0.25.9
-      rollup: 2.79.1
+      rollup: 3.9.0
     dev: true
 
-  /@rollup/pluginutils/3.1.0_rollup@2.79.1:
+  /@rollup/pluginutils/3.1.0_rollup@3.9.0:
     resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
     engines: {node: '>= 8.0.0'}
     peerDependencies:
@@ -719,10 +719,10 @@ packages:
       '@types/estree': 0.0.39
       estree-walker: 1.0.1
       picomatch: 2.3.1
-      rollup: 2.79.1
+      rollup: 3.9.0
     dev: true
 
-  /@rollup/pluginutils/5.0.2_rollup@2.79.1:
+  /@rollup/pluginutils/5.0.2_rollup@3.9.0:
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -734,7 +734,7 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 2.79.1
+      rollup: 3.9.0
     dev: true
 
   /@trysound/sax/0.2.0:
@@ -2882,16 +2882,16 @@ packages:
       is-plain-object: 3.0.1
     dev: true
 
-  /rollup-plugin-empty-dir/1.0.5_rollup@2.79.1:
+  /rollup-plugin-empty-dir/1.0.5_rollup@3.9.0:
     resolution: {integrity: sha512-wSfmBP/d8bLJvsgthDUiptZUCzAlkp/BUi/bk+7mUOF4GkFBKvnD8FK8xC+6PFwqO04SPHaJGfB8rOHfKBPJXQ==}
     peerDependencies:
       rollup: ^1.6.0 || ^2.0.0
     dependencies:
       fs-extra: 7.0.1
-      rollup: 2.79.1
+      rollup: 3.9.0
     dev: true
 
-  /rollup-plugin-license/2.8.1_rollup@2.79.1:
+  /rollup-plugin-license/2.8.1_rollup@3.9.0:
     resolution: {integrity: sha512-VYd9pzaNL7NN6xQp93XiiCV2UoduXgSmTcz6rl9bHPdiifT6yH3Zw/omEr73Rq8TIyN4nqJACBbKIT/2eE66wg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -2904,7 +2904,7 @@ packages:
       mkdirp: 1.0.4
       moment: 2.29.4
       package-name-regex: 2.0.6
-      rollup: 2.79.1
+      rollup: 3.9.0
       spdx-expression-validate: 2.0.0
       spdx-satisfies: 5.0.1
     dev: true
@@ -2933,7 +2933,7 @@ packages:
       - ts-node
     dev: true
 
-  /rollup-plugin-svelte/7.1.0_i7ezk4bjuqxhd3642jb7pe7zwu:
+  /rollup-plugin-svelte/7.1.0_rollup@3.9.0+svelte@3.55.0:
     resolution: {integrity: sha512-vopCUq3G+25sKjwF5VilIbiY6KCuMNHP1PFvx2Vr3REBNMDllKHFZN2B9jwwC+MqNc3UPKkjXnceLPEjTjXGXg==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -2941,12 +2941,12 @@ packages:
       svelte: '>=3.5.0'
     dependencies:
       require-relative: 0.8.7
-      rollup: 2.79.1
+      rollup: 3.9.0
       rollup-pluginutils: 2.8.2
       svelte: 3.55.0
     dev: true
 
-  /rollup-plugin-terser/7.0.2_rollup@2.79.1:
+  /rollup-plugin-terser/7.0.2_rollup@3.9.0:
     resolution: {integrity: sha512-w3iIaU4OxcF52UUXiZNsNeuXIMDvFrr+ZXK6bFZ0Q60qyVfq4uLptoS4bbq3paG3x216eQllFZX7zt6TIImguQ==}
     deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
     peerDependencies:
@@ -2954,7 +2954,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.18.6
       jest-worker: 26.6.2
-      rollup: 2.79.1
+      rollup: 3.9.0
       serialize-javascript: 4.0.0
       terser: 5.16.1
     dev: true
@@ -2976,6 +2976,14 @@ packages:
   /rollup/2.79.1:
     resolution: {integrity: sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==}
     engines: {node: '>=10.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
+  /rollup/3.9.0:
+    resolution: {integrity: sha512-nGGylpmblyjTpF4lEUPgmOw6OVxRvnI6Iuuh6Lz4O/X66cVOX1XJSsqP1YamxQ+mPuFE7qJxLFDSCk8rNv5dDw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
