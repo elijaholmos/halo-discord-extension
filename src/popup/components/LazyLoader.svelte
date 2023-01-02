@@ -1,13 +1,3 @@
-<!-- 
-    Component that displays a loading spinner until async function
-    lazyLoad is fulfilled (or rejected) 
--->
-<script>
-	import Error from './Error.svelte';
-
-	export let lazyLoad = () => {};
-</script>
-
 <!--
   ~ Copyright (C) 2023 Elijah Olmos
   ~
@@ -24,6 +14,15 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<!-- 
+  ~ Component that displays a loading spinner until async function
+  ~ lazyLoad is fulfilled (or rejected) 
+-->
+<script>
+	import Error from './Error.svelte';
+
+	export let lazyLoad = () => {};
+</script>
 
 
 <!-- Removed wrapper div becayse styling errors occurred -->
