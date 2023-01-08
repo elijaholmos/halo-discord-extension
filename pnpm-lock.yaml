@@ -12,7 +12,7 @@ specifiers:
   fflate: 0.7.4
   filesize: 10.0.6
   firebase: 9.15.0
-  js-base64: 3.7.3
+  js-base64: 3.7.4
   postcss: 8.4.20
   rollup: 2.79.1
   rollup-plugin-chrome-extension: 3.6.10
@@ -30,7 +30,7 @@ specifiers:
 dependencies:
   compare-versions: 5.0.3
   firebase: 9.15.0
-  js-base64: 3.7.3
+  js-base64: 3.7.4
 
 devDependencies:
   '@rollup/plugin-node-resolve': 15.0.1_rollup@2.79.1
@@ -1989,8 +1989,8 @@ packages:
       supports-color: 7.2.0
     dev: true
 
-  /js-base64/3.7.3:
-    resolution: {integrity: sha512-PAr6Xg2jvd7MCR6Ld9Jg3BmTcjYsHEBx1VlwEwULb/qowPf5VD9kEMagj23Gm7JRnSvE/Da/57nChZjnvL8v6A==}
+  /js-base64/3.7.4:
+    resolution: {integrity: sha512-wpM/wi20Tl+3ifTyi0RdDckS4YTD4Lf953mBRrpG8547T7hInHNPEj8+ck4gB8VDcGyeAWFK++Wb/fU1BeavKQ==}
     dev: false
 
   /js-tokens/4.0.0:
