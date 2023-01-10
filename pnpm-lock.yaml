@@ -23,7 +23,7 @@ specifiers:
   rollup-plugin-svelte: 7.1.0
   rollup-plugin-terser: 7.0.2
   rollup-plugin-zipdir: 1.0.1
-  svelte: 3.55.0
+  svelte: 3.55.1
   svelte-preprocess: 5.0.0
   tailwindcss: 3.2.4
 
@@ -49,11 +49,11 @@ devDependencies:
   rollup-plugin-empty-dir: 1.0.5_rollup@2.79.1
   rollup-plugin-license: 2.8.1_rollup@2.79.1
   rollup-plugin-postcss: 4.0.2_postcss@8.4.20
-  rollup-plugin-svelte: 7.1.0_i7ezk4bjuqxhd3642jb7pe7zwu
+  rollup-plugin-svelte: 7.1.0_wqqnxzvosiw4srqlri2xb7asou
   rollup-plugin-terser: 7.0.2_rollup@2.79.1
   rollup-plugin-zipdir: 1.0.1
-  svelte: 3.55.0
-  svelte-preprocess: 5.0.0_qs7rgzvahok4cbkjoy5bgypde4
+  svelte: 3.55.1
+  svelte-preprocess: 5.0.0_lynlo5uwugq3maqcrwjqqa3a7i
   tailwindcss: 3.2.4_postcss@8.4.20
 
 packages:
@@ -2933,7 +2933,7 @@ packages:
       - ts-node
     dev: true
 
-  /rollup-plugin-svelte/7.1.0_i7ezk4bjuqxhd3642jb7pe7zwu:
+  /rollup-plugin-svelte/7.1.0_wqqnxzvosiw4srqlri2xb7asou:
     resolution: {integrity: sha512-vopCUq3G+25sKjwF5VilIbiY6KCuMNHP1PFvx2Vr3REBNMDllKHFZN2B9jwwC+MqNc3UPKkjXnceLPEjTjXGXg==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -2943,7 +2943,7 @@ packages:
       require-relative: 0.8.7
       rollup: 2.79.1
       rollup-pluginutils: 2.8.2
-      svelte: 3.55.0
+      svelte: 3.55.1
     dev: true
 
   /rollup-plugin-terser/7.0.2_rollup@2.79.1:
@@ -3159,7 +3159,7 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /svelte-preprocess/5.0.0_qs7rgzvahok4cbkjoy5bgypde4:
+  /svelte-preprocess/5.0.0_lynlo5uwugq3maqcrwjqqa3a7i:
     resolution: {integrity: sha512-q7lpa7i2FBu8Pa+G0MmuQQWETBwCKgsGmuq1Sf6n8q4uaG9ZLcLP0Y+etC6bF4sE6EbLxfiI38zV6RfPe3RSfg==}
     engines: {node: '>= 14.10.0'}
     requiresBuild: true
@@ -3204,11 +3204,11 @@ packages:
       postcss: 8.4.20
       sorcery: 0.10.0
       strip-indent: 3.0.0
-      svelte: 3.55.0
+      svelte: 3.55.1
     dev: true
 
-  /svelte/3.55.0:
-    resolution: {integrity: sha512-uGu2FVMlOuey4JoKHKrpZFkoYyj0VLjJdz47zX5+gVK5odxHM40RVhar9/iK2YFRVxvfg9FkhfVlR0sjeIrOiA==}
+  /svelte/3.55.1:
+    resolution: {integrity: sha512-S+87/P0Ve67HxKkEV23iCdAh/SX1xiSfjF1HOglno/YTbSTW7RniICMCofWGdJJbdjw3S+0PfFb1JtGfTXE0oQ==}
     engines: {node: '>= 8'}
     dev: true
 
