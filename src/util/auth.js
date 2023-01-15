@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Elijah Olmos
+ * Copyright (C) 2023 Elijah Olmos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -108,10 +108,10 @@ export const getDefaultSettings = async function () {
 	try {
 		console.log('getDefaultSettings');
 		const settings = await get(ref(db, 'default_settings'));
-		return settings.exists() ? settings.val() : {};
+		return settings.exists() ? Object.values(settings.val()) : [];
 	} catch (e) {
 		console.error('getUserSettings error', e);
-		return {};
+		return [];
 	}
 };
 

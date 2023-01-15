@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 Elijah Olmos
+  ~ Copyright (C) 2023 Elijah Olmos
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -51,7 +51,7 @@
 		// settings
 		default_settings = await getDefaultSettings();
 		//apply default settings to user_settings
-		user_settings = Object.values(default_settings).reduce(
+		user_settings = default_settings.reduce(
 			(acc, { id, value }) => (!!acc.hasOwnProperty(id) ? acc : { ...acc, [id]: value }),
 			await getUserSettings()
 		);

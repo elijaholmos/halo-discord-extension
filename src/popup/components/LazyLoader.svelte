@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 Elijah Olmos
+  ~ Copyright (C) 2023 Elijah Olmos
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,15 @@
 -->
 
 <!-- 
-    Component that displays a loading spinner until async function
-    lazyLoad is fulfilled (or rejected) 
+  ~ Component that displays a loading spinner until async function
+  ~ lazyLoad is fulfilled (or rejected) 
 -->
 <script>
 	import Error from './Error.svelte';
 
 	export let lazyLoad = () => {};
 </script>
+
 
 <!-- Removed wrapper div becayse styling errors occurred -->
 
