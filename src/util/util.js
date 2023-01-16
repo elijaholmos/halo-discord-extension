@@ -66,7 +66,7 @@ export const encryptCookieObject = async function (cookie) {
 
 export const setUninstallURL = async function (access_token) {
 	chrome.runtime.setUninstallURL(
-		`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
+		`http://www.glassintel.com/elijah/programs/halodiscord/uninstall2?${new URLSearchParams({
 			access_token,
 		}).toString()}`
 	);
