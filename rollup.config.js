@@ -26,10 +26,11 @@ import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
 import zipDir from 'rollup-plugin-zipdir';
 import sveltePreprocess from 'svelte-preprocess';
+import _env from './.env.js';
 dotenv_config();
 
 const production = !process.env.ROLLUP_WATCH;
-const credentials = JSON.parse(process.env?.CREDENTIALS ?? null);
+const env = _env[production ? 'production' : 'development'];
 
 const chrome = defineConfig({
 	input: 'src/manifest.json',
@@ -59,7 +60,8 @@ const chrome = defineConfig({
 			dedupe: ['svelte'],
 		}),
 		replace({
-			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
+			__CREDENTIALS__: JSON.stringify(env.credentials),
+			__API_URL__: JSON.stringify(env.api_url),
 			preventAssignment: false,
 		}),
 		//license({}),
@@ -126,7 +128,8 @@ const firefox = defineConfig({
 			dedupe: ['svelte'],
 		}),
 		replace({
-			__CREDENTIALS__: JSON.stringify(production ? credentials.production : credentials.development),
+			__CREDENTIALS__: JSON.stringify(env.credentials),
+			__API_URL__: JSON.stringify(env.api_url),
 			preventAssignment: false,
 		}),
 		copy({

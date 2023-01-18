@@ -114,6 +114,7 @@ export const validateCookie = async function ({ cookie }) {
 		const overview = await getUserOverview({ cookie, uid });
 		return !!uid && !!overview;
 	} catch (error) {
+		console.log('[validateCookie] validation failed', error);
 		return false;
 	}
 };

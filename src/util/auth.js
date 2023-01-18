@@ -14,13 +14,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { get, ref, serverTimestamp, set, update } from 'firebase/database';
+import { getIdToken, signInWithCustomToken } from 'firebase/auth';
+import { get, increment, ref, serverTimestamp, set, update } from 'firebase/database';
 import { stores } from '../stores';
 import credentials from './credentials';
 import { validateCookie } from './halo';
-import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject } from './util';
-const url = 'https://halo-discord-functions.vercel.app/api';
+import { auth, db, encryptCookieObject, getHaloCookies, isValidCookieObject, setUninstallURL } from './util';
+const url = __API_URL__;
 
 export const fetchDiscordUser = async function ({ access_token, count = 0 } = stores.discord_tokens.get()) {
 	try {
@@ -72,11 +72,35 @@ export const refreshDiscordToken = async function ({ refresh_token } = stores.di
 		//store tokens in DB
 		update(ref(db, `discord_tokens/${auth.currentUser.uid}`), tokens);
 
+		//update uninstall URL
+		setUninstallURL(access_token);
+
 		//lastly, return the access token
 		return access_token;
 	} catch (err) {
 		console.error(err);
 		throw err;
+	}
+};
+
+export const getUserJwt = async function ({ access_token } = stores.discord_tokens.get()) {
+	try {
+		const token = await getIdToken(auth?.currentUser);
+		console.log('[getUserJwt] retrieved token', token);
+		return token;
+	} catch (err) {
+		console.log('[getUserJwt] caught error', err);
+
+		if (!access_token) throw new Error('[getUserJwt] No Discord access token');
+		const res = await fetch(`${url}/login`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ access_token }),
+		});
+
+		if (res.status !== 200) throw new Error(await res.text());
+
+		return (await res.json()).token;
 	}
 };
 
@@ -142,7 +166,7 @@ export const triggerDiscordAuthFlow = function () {
 			{
 				url: `https://discord.com/api/oauth2/authorize?response_type=code&client_id=${
 					credentials.discord.client_id
-				}&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=identify`,
+				}&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=identify%20guilds`,
 				interactive: true,
 			},
 			async (redirect_url) => {
@@ -168,22 +192,14 @@ export const triggerDiscordAuthFlow = function () {
 							return resolve();
 						} else throw new Error('You cannot login with a different Discord account');
 
-					//set uninstall URL for internal purposes
-					chrome.runtime.setUninstallURL(
-						`http://www.glassintel.com/elijah/programs/halodiscord/uninstall?${new URLSearchParams({
-							discord_uid,
-							access_token,
-						}).toString()}`
-					);
+					//set uninstall URL to update their account after uninstalling
+					setUninstallURL(access_token);
 
-					//create Firebase user (BEFORE storing local discord info)
-					//this also signs in the user
-					const { user } = await createUserWithEmailAndPassword(
-						auth,
-						`${discord_uid}@halodiscord.app`,
-						access_token
-					);
-					console.log('created and signed in', user);
+					//retrieve token from api (BEFORE storing local discord info)
+					const jwt = await getUserJwt({ access_token });
+					//sign in the user
+					const { user } = await signInWithCustomToken(auth, jwt);
+					console.log('retrieved token and signed in', user);
 
 					//store tokens locally - this triggers settings popup (which requires user to be signed in to firebase)
 					stores.discord_tokens.set(tokens);
@@ -204,10 +220,13 @@ export const triggerDiscordAuthFlow = function () {
 						console.error('[error] sweping cookies initial', e);
 					}
 
-					//set user info in Firebase
-					await set(ref(db, `users/${user.uid}`), {
-						discord_uid,
-						created_on: Date.now(),
+					//because Firebase is dumb, we don't get a create() method like Firestore
+					//so we have to check if the user exists first thru a separate query
+					const user_doc_ref = ref(db, `users/${user.uid}`);
+					//set created_on field in user info in Firebase (triggers bot)
+					await update(user_doc_ref, {
+						...(!(await get(user_doc_ref)).exists() && { created_on: serverTimestamp() }),
+						ext_devices: increment(1),
 					});
 					//store discord tokens in DB
 					await update(ref(db, `discord_tokens/${user.uid}`), tokens);
