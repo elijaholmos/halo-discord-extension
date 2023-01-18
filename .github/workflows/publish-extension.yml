@@ -9,10 +9,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Create .env file
-              uses: SpicyPizza/create-envfile@v1.3.1
-              with:
-                  envkey_CREDENTIALS: ${{ secrets.CREDENTIALS }}
+            - uses: finnp/create-file-action@master
+              env:
+                  FILE_NAME: '.env.js'
+                  FILE_BASE64: ${{ secrets.B64_ENV }}
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.2.4
               with:
