@@ -24,7 +24,7 @@ specifiers:
   rollup-plugin-terser: 7.0.2
   rollup-plugin-zipdir: 1.0.1
   svelte: 3.55.1
-  svelte-preprocess: 5.0.0
+  svelte-preprocess: 5.0.1
   tailwindcss: 3.2.4
 
 dependencies:
@@ -53,7 +53,7 @@ devDependencies:
   rollup-plugin-terser: 7.0.2_rollup@2.79.1
   rollup-plugin-zipdir: 1.0.1
   svelte: 3.55.1
-  svelte-preprocess: 5.0.0_lynlo5uwugq3maqcrwjqqa3a7i
+  svelte-preprocess: 5.0.1_lynlo5uwugq3maqcrwjqqa3a7i
   tailwindcss: 3.2.4_postcss@8.4.20
 
 packages:
@@ -3020,14 +3020,14 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /sorcery/0.10.0:
-    resolution: {integrity: sha512-R5ocFmKZQFfSTstfOtHjJuAwbpGyf9qjQa1egyhvXSbM7emjrtLXtGdZsDJDABC85YBfVvrOiGWKSYXPKdvP1g==}
+  /sorcery/0.11.0:
+    resolution: {integrity: sha512-J69LQ22xrQB1cIFJhPfgtLuI6BpWRiWu1Y3vSsIwK/eAScqJxd/+CJlUuHQRdX2C9NGFamq+KqNywGgaThwfHw==}
     hasBin: true
     dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.14
       buffer-crc32: 0.2.13
       minimist: 1.2.7
       sander: 0.5.1
-      sourcemap-codec: 1.4.8
     dev: true
 
   /source-map-js/1.0.2:
@@ -3159,8 +3159,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /svelte-preprocess/5.0.0_lynlo5uwugq3maqcrwjqqa3a7i:
-    resolution: {integrity: sha512-q7lpa7i2FBu8Pa+G0MmuQQWETBwCKgsGmuq1Sf6n8q4uaG9ZLcLP0Y+etC6bF4sE6EbLxfiI38zV6RfPe3RSfg==}
+  /svelte-preprocess/5.0.1_lynlo5uwugq3maqcrwjqqa3a7i:
+    resolution: {integrity: sha512-0HXyhCoc9rsW4zGOgtInylC6qj259E1hpFnJMJWTf+aIfeqh4O/QHT31KT2hvPEqQfdjmqBR/kO2JDkkciBLrQ==}
     engines: {node: '>= 14.10.0'}
     requiresBuild: true
     peerDependencies:
@@ -3202,7 +3202,7 @@ packages:
       detect-indent: 6.1.0
       magic-string: 0.27.0
       postcss: 8.4.20
-      sorcery: 0.10.0
+      sorcery: 0.11.0
       strip-indent: 3.0.0
       svelte: 3.55.1
     dev: true
