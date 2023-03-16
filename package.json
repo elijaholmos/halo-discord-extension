@@ -1,14 +1,14 @@
 {
 	"name": "halo-discord-extension",
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"description": "Receive Discord notifications for updates in Halo",
 	"author": "Elijah Olmos",
 	"license": "AGPL-3.0-only",
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"test:chrome": "rollup -c -w --configChrome",
-		"test:firefox": "rollup -c -w --configFirefox",
+		"dev:chrome": "rollup -c -w --configChrome",
+		"dev:firefox": "rollup -c -w --configFirefox",
 		"build": "pnpm run build:chrome && pnpm run build:firefox",
 		"build:chrome": "rollup -c --configChrome",
 		"build:firefox": "rollup -c --configFirefox"
