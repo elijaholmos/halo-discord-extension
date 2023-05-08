@@ -16,7 +16,7 @@
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "15.0.1",
 		"@rollup/plugin-replace": "4.0.0",
-		"@types/chrome": "0.0.226",
+		"@types/chrome": "0.0.235",
 		"autoprefixer": "10.4.13",
 		"colorette": "2.0.19",
 		"daisyui": "2.51.6",
