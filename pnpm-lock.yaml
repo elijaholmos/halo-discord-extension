@@ -25,8 +25,8 @@ devDependencies:
     specifier: 10.4.13
     version: 10.4.13(postcss@8.4.21)
   colorette:
-    specifier: 2.0.19
-    version: 2.0.19
+    specifier: 2.0.20
+    version: 2.0.20
   daisyui:
     specifier: 2.51.6
     version: 2.51.6(autoprefixer@10.4.13)(postcss@8.4.21)
@@ -1112,8 +1112,8 @@ packages:
     resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
     dev: true
 
-  /colorette@2.0.19:
-    resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
+  /colorette@2.0.20:
+    resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
     dev: true
 
   /commander@2.20.3:
@@ -2976,7 +2976,7 @@ packages:
   /rollup-plugin-zipdir@1.0.1:
     resolution: {integrity: sha512-EpMHipDA2D5NtntnRtd7429onYQ8UKXQQaNQHc0FCkd2QRZy2MMLXsWkoVxa39gM0xWML3PP2pscJNIgYEQWhA==}
     dependencies:
-      colorette: 2.0.19
+      colorette: 2.0.20
       fflate: 0.7.4
       filesize: 10.0.6
     dev: true
