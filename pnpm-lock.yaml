@@ -8,8 +8,8 @@ dependencies:
     specifier: 9.17.2
     version: 9.17.2
   js-base64:
-    specifier: 3.7.4
-    version: 3.7.4
+    specifier: 3.7.5
+    version: 3.7.5
 
 devDependencies:
   '@rollup/plugin-node-resolve':
@@ -2002,8 +2002,8 @@ packages:
       supports-color: 7.2.0
     dev: true
 
-  /js-base64@3.7.4:
-    resolution: {integrity: sha512-wpM/wi20Tl+3ifTyi0RdDckS4YTD4Lf953mBRrpG8547T7hInHNPEj8+ck4gB8VDcGyeAWFK++Wb/fU1BeavKQ==}
+  /js-base64@3.7.5:
+    resolution: {integrity: sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==}
     dev: false
 
   /js-tokens@4.0.0:
