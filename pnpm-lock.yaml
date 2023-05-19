@@ -37,8 +37,8 @@ devDependencies:
     specifier: 0.7.4
     version: 0.7.4
   filesize:
-    specifier: 10.0.6
-    version: 10.0.6
+    specifier: 10.0.7
+    version: 10.0.7
   postcss:
     specifier: 8.4.23
     version: 8.4.23
@@ -1678,8 +1678,8 @@ packages:
     resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
     dev: true
 
-  /filesize@10.0.6:
-    resolution: {integrity: sha512-rzpOZ4C9vMFDqOa6dNpog92CoLYjD79dnjLk2TYDDtImRIyLTOzqojCb05Opd1WuiWjs+fshhCgTd8cl7y5t+g==}
+  /filesize@10.0.7:
+    resolution: {integrity: sha512-iMRG7Qo9nayLoU3PNCiLizYtsy4W1ClrapeCwEgtiQelOAOuRJiw4QaLI+sSr8xr901dgHv+EYP2bCusGZgoiA==}
     engines: {node: '>= 10.4.0'}
     dev: true
 
@@ -3014,7 +3014,7 @@ packages:
     dependencies:
       colorette: 2.0.20
       fflate: 0.7.4
-      filesize: 10.0.6
+      filesize: 10.0.7
     dev: true
 
   /rollup-pluginutils@2.8.2:
