@@ -38,8 +38,8 @@ devDependencies:
     specifier: 16.0.3
     version: 16.0.3
   fflate:
-    specifier: 0.7.4
-    version: 0.7.4
+    specifier: 0.8.2
+    version: 0.8.2
   filesize:
     specifier: 10.0.7
     version: 10.0.7
@@ -1693,6 +1693,10 @@ packages:
 
   /fflate@0.7.4:
     resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
+    dev: true
+
+  /fflate@0.8.2:
+    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
     dev: true
 
   /filesize@10.0.7:
