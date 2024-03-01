@@ -65,8 +65,8 @@ devDependencies:
     specifier: 4.0.2
     version: 4.0.2(postcss@8.4.30)
   rollup-plugin-svelte:
-    specifier: 7.1.5
-    version: 7.1.5(rollup@2.79.1)(svelte@3.59.1)
+    specifier: 7.1.6
+    version: 7.1.6(rollup@2.79.1)(svelte@3.59.1)
   rollup-plugin-terser:
     specifier: 7.0.2
     version: 7.0.2(rollup@2.79.1)
@@ -2991,8 +2991,8 @@ packages:
       - ts-node
     dev: true
 
-  /rollup-plugin-svelte@7.1.5(rollup@2.79.1)(svelte@3.59.1):
-    resolution: {integrity: sha512-TXdtwPW/0wifaQvFf9SG36xbJYi8ok1AcSZe21u0vKcVrfc3JB7NOhwSWa9bQC3ltnBNsmNdga8bHqcnezzEug==}
+  /rollup-plugin-svelte@7.1.6(rollup@2.79.1)(svelte@3.59.1):
+    resolution: {integrity: sha512-nVFRBpGWI2qUY1OcSiEEA/kjCY2+vAjO9BI8SzA7NRrh2GTunLd6w2EYmnMt/atgdg8GvcNjLsmZmbQs/u4SQA==}
     engines: {node: '>=10'}
     peerDependencies:
       rollup: '>=2.0.0'
