@@ -243,7 +243,6 @@ export const triggerDiscordAuthFlow = function () {
 export const health = async function () {
 	try {
 		const version = chrome.runtime.getManifest().version;
-		//get an access token using the refresh token
 		const res = await fetch(`${url}/health`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },

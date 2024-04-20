@@ -16,12 +16,13 @@
 <script>
 	import { stores } from '../stores';
 	import { fetchDiscordUser, getDefaultSettings, getUserSettings, updateUserSettings } from '../util/auth';
-	import { getUserId, getUserOverview } from '../util/halo';
+	import { getUserOverview } from '../util/halo';
 	import LazyLoader from './components/LazyLoader.svelte';
 	import Navbar from './components/Navbar.svelte';
-	const { halo_cookies } = stores;
+	const { halo_cookies, halo_info } = stores;
 
 	// ----- state -----
+	$: ({ userId } = $halo_info || {});
 	let user;
 	let classes = [];
 	let default_settings;
@@ -43,7 +44,7 @@
 		if (!user) throw new Error('Unable to fetch Discord information, please close & reopen the popup');
 		//const cookie = await getCookie();
 		const cookie = halo_cookies.get();
-		const uid = await getUserId({ cookie });
+		const uid = userId;
 		const class_res = await getUserOverview({ uid, cookie });
 		console.log(class_res);
 		for (const { courseCode } of class_res.classes.courseClasses) classes.push(courseCode);
