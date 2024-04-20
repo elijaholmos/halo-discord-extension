@@ -16,12 +16,11 @@
 
 // temporary until extracted into separate npm module
 
-import { stores } from '../stores';
-export const AUTHORIZATION_KEY = '__Secure-next-auth.session-token.0';
-export const CONTEXT_KEY = '__Secure-next-auth.session-token.1';
+export const AUTHORIZATION_KEY = 'TE1TX0FVVEg';
+export const CONTEXT_KEY = 'TE1TX0NPTlRFWFQ';
 const url = {
 	gateway: 'https://gateway.halo.gcu.edu',
-	session: 'https://halo.gcu.edu/api/auth/session/',
+	validate: 'https://halo.gcu.edu/api/token-validate/',
 };
 
 export const getUserOverview = async function ({ cookie, uid }) {
@@ -31,8 +30,8 @@ export const getUserOverview = async function ({ cookie, uid }) {
 			headers: {
 				accept: '*/*',
 				'content-type': 'application/json',
-				authorization: `Bearer ${cookie[AUTHORIZATION_KEY]}`,
-				contexttoken: `Bearer ${cookie[CONTEXT_KEY]}`,
+				authorization: `Bearer ${cookie.TE1TX0FVVEg}`,
+				contexttoken: `Bearer ${cookie.TE1TX0NPTlRFWFQ}`,
 			},
 			body: JSON.stringify({
 				//Specific GraphQL query syntax, reverse-engineered
@@ -61,38 +60,48 @@ export const getUserOverview = async function ({ cookie, uid }) {
  */
 export const getUserId = async function ({ cookie }) {
 	const res = await (
-		await fetch(url.session, {
-			method: 'GET',
+		await fetch(url.validate, {
+			method: 'POST',
 			headers: {
 				accept: '*/*',
 				'content-type': 'application/json',
-				cookie: new URLSearchParams(Object.entries(cookie)).toString().replaceAll('&', '; '),
+				authorization: `Bearer ${cookie.TE1TX0FVVEg}`,
+				contexttoken: `Bearer ${cookie.TE1TX0NPTlRFWFQ}`,
 			},
+			body: JSON.stringify({
+				userToken: cookie.TE1TX0FVVEg,
+				contextToken: cookie.TE1TX0NPTlRFWFQ,
+			}),
 		})
 	).json();
 
 	if (res?.errors?.[0]?.message?.includes('401')) throw { code: 401, cookie };
 	//Error handling and data validation could be improved
 	if (res.error) return console.error(res.error);
-	return res.userId;
+	return res.payload.userid;
 };
 
 export const getHaloUserInfo = async function ({ cookie }) {
 	const res = await (
-		await fetch(url.session, {
-			method: 'GET',
+		await fetch(url.validate, {
+			method: 'POST',
 			headers: {
 				accept: '*/*',
 				'content-type': 'application/json',
-				cookie: new URLSearchParams(Object.entries(cookie)).toString().replaceAll('&', '; '),
+				authorization: `Bearer ${cookie.TE1TX0FVVEg}`,
+				contexttoken: `Bearer ${cookie.TE1TX0NPTlRFWFQ}`,
 			},
+			body: JSON.stringify({
+				userToken: cookie.TE1TX0FVVEg,
+				contextToken: cookie.TE1TX0NPTlRFWFQ,
+			}),
 		})
 	).json();
 
 	if (res?.errors?.[0]?.message?.includes('401')) throw { code: 401, cookie };
 	//Error handling and data validation could be improved
 	if (res.error) return console.error(res.error);
-	return res;
+	return res.payload;
 };
 
 /**
@@ -101,7 +110,7 @@ export const getHaloUserInfo = async function ({ cookie }) {
  */
 export const validateCookie = async function ({ cookie }) {
 	try {
-		const { userId: uid } = stores.halo_info.get();
+		const uid = await getUserId({ cookie });
 		const overview = await getUserOverview({ cookie, uid });
 		return !!uid && !!overview;
 	} catch (error) {

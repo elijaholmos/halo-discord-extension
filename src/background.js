@@ -50,7 +50,7 @@ const firebaseSignIn = async function () {
 				// always remove tokens on install to require user to reauth
 				chrome.storage.sync.remove('discord_tokens');
 				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
-				// chrome.action.openPopup();
+				chrome.action.openPopup();
 				break;
 			// case chrome.runtime.OnInstalledReason.UPDATE:
 			// 	!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
@@ -119,8 +119,7 @@ const firebaseSignIn = async function () {
 			console.log(`found non-dup cookie: ${cookie.name}`);
 			stores.halo_cookies.update({ [cookie.name]: cookie.value });
 			//refresh halo user info in case of login/logout
-			// 2024-04-19: new halo auth update makes getHaloUserInfo() cause an infinite cookie changed loop
-			// stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
+			stores.halo_info.update(await getHaloUserInfo({ cookie: stores.halo_cookies.get() }));
 		}
 
 		// push cookies to db every COOKIE_PUSH_INTERVAL
