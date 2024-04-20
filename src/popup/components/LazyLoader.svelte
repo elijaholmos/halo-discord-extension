@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2023 Elijah Olmos
+  ~ Copyright (C) 2024 Elijah Olmos
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,6 @@
 
 	export let lazyLoad = () => {};
 </script>
-
 
 <!-- Removed wrapper div becayse styling errors occurred -->
 
