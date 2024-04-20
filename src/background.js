@@ -50,7 +50,7 @@ const firebaseSignIn = async function () {
 				// always remove tokens on install to require user to reauth
 				chrome.storage.sync.remove('discord_tokens');
 				// currently broken, see https://github.com/GoogleChrome/developer.chrome.com/issues/2602
-				chrome.action.openPopup();
+				// chrome.action.openPopup();
 				break;
 			// case chrome.runtime.OnInstalledReason.UPDATE:
 			// 	!!auth?.currentUser && set(ref(db, `users/${auth.currentUser.uid}/extension_version`), VERSION);
